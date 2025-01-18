@@ -385,6 +385,64 @@ body {
     border-radius: 0.5rem; /* Rounded corners for the image */
 }
 
+
+         img {
+            
+             align-items: center;
+             width: 150px;
+             height: 150px;
+         }
+         /*card ka css*/
+          .features-grid {
+            display: flex;
+            gap: 30px;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 350px;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            background-color: #fff;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.08);
+        }
+
+        .card img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 22px;
+            margin: 15px 0;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: #555;
+        }
+        /*news photo css*/
+         .cta-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cta-image img {
+            width: 400px;
+            height: auto;
+            border-radius: 10px;
+        }
         }
         
     </style>
@@ -407,7 +465,7 @@ body {
                         <li><a href="/about">About</a></li>
                         <li><a href="/news">News Articles</a></li>
                         <li>
-    <a href="/profile">
+    <a href="SignIn.aspx">
         <img src="profile.jpg" alt="Profile" class="profile-image">
     </a>
 </li>
@@ -423,6 +481,7 @@ body {
     <div class="container" style="text-align: left;">
         <h1><span style="color: blue;">Welcome to</span> <span style="color: red;">DailyNeuzz</span></h1>
         <p style="text-align: left !important;">Your trusted source for the latest headlines, in-depth analysis, and breaking news every morning</p>
+        <p><i>Stay informed, stay ahead!</i></p>
         <a href="/news" class="button button-primary" style="background-color: yellow; color: black;">View all posts →</a>
     </div>
 </section>
@@ -435,27 +494,21 @@ body {
         <!-- Features Section -->
         <section class="features">
             <div class="container">
-                <h2>Why You'll Love Morning Dispatch</h2>
+                <h2>Why You'll Love Daily Neuzz</h2>
                 <div class="features-grid">
                     <div class="card">
-                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
+                       <img src="image/Book.png" alt="Icon">
+
                         <h3>Diverse Content</h3>
                         <p>Explore news on a variety of topics, from technology to lifestyle.</p>
                     </div>
                     <div class="card">
-                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            <path d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/>
-                        </svg>
+                       <img src="image/global.png" alt="Icon">
                         <h3>Community Driven</h3>
                         <p>Connect with writers and readers who share your interests.</p>
                     </div>
                     <div class="card">
-                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
-                        </svg>
+                       <img src="image/rocket.png" alt="Icon">
                         <h3>Easy to Use</h3>
                         <p>A seamless platform for sharing and discovering great content.</p>
                     </div>
@@ -471,7 +524,7 @@ body {
             <a href="/news" class="button button-primary button-large">Stay Updated with Daily News: Your Go-To Resources</a>
         </div>
         <div class="cta-image">
-            <img src="your-image-url.jpg" alt="News Image">
+            <img src="image/news.jpeg" alt="News Image">
         </div>
     </div>
 </section>
@@ -484,7 +537,7 @@ body {
                 <h2>Recent Posts</h2>
                 <div class="posts-grid">
                     <article class="post-card">
-                        <img src="/placeholder.svg?height=200&width=400" alt="Discover Serenity: Top Hidden Travel Gems">
+                        <img src="image/Article1.jpeg?height=200&width=400" alt="Discover Serenity: Top Hidden Travel Gems">
                         <div class="post-content">
                             <h3 class="post-title">Discover Serenity: Top Hidden Travel Gems</h3>
                             <p class="post-category">worldnews</p>
@@ -494,7 +547,7 @@ body {
                         </div>
                     </article>
                     <article class="post-card">
-                        <img src="/placeholder.svg?height=200&width=400" alt="City Park Revamp Project Brings New Life">
+                        <img src="image/Article2.jpg?height=200&width=400" alt="City Park Revamp Project Brings New Life">
                         <div class="post-content">
                             <h3 class="post-title">City Park Revamp Project Brings New Life</h3>
                             <p class="post-category">localnews</p>
@@ -504,7 +557,7 @@ body {
                         </div>
                     </article>
                     <article class="post-card">
-                        <img src="/placeholder.svg?height=200&width=400" alt="Lionel Messi's Magical Hat-Trick">
+                        <img src="image/Messi.jpeg?height=200&width=400" alt="Lionel Messi's Magical Hat-Trick">
                         <div class="post-content">
                             <h3 class="post-title">Lionel Messi's Magical Hat-Trick</h3>
                             <p class="post-category">sportsnews</p>
@@ -514,7 +567,7 @@ body {
                         </div>
                     </article>
                     <article class="post-card">
-                        <img src="/placeholder.svg?height=200&width=400" alt="Breakthrough Climate Agreement">
+                        <img src="image/mountain.jpeg?height=200&width=400" alt="Breakthrough Climate Agreement">
                         <div class="post-content">
                             <h3 class="post-title">Breakthrough Climate Agreement</h3>
                             <p class="post-category">worldnews</p>
@@ -523,6 +576,26 @@ body {
                             <a href="/articles/4" class="button button-secondary button-full">Read Article</a>
                         </div>
                     </article>
+                    <article class="post-card">
+                    <img src="image/sport.jpg?height=200&width=400" alt="Breakthrough Climate Agreement">
+                    <div class="post-content">
+                        <h3 class="post-title">Sports Fiesta</h3>
+                        <p class="post-category">worldnews</p>
+                    </div>
+                    <div class="post-footer">
+                        <a href="/articles/4" class="button button-secondary button-full">Read Article</a>
+                    </div>
+                </article>
+                    <article class="post-card">
+                    <img src="image/Ai.jpg?height=200&width=400" alt="Breakthrough Climate Agreement">
+                    <div class="post-content">
+                        <h3 class="post-title">AI Technology</h3>
+                        <p class="post-category">worldnews</p>
+                    </div>
+                    <div class="post-footer">
+                        <a href="/articles/4" class="button button-secondary button-full">Read Article</a>
+                    </div>
+                </article>
                 </div>
             </div>
         </section>

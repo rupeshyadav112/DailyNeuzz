@@ -68,6 +68,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Home.aspx" />
+    <Content Include="image\Ai.jpg" />
+    <Content Include="image\Article1.jpeg" />
+    <Content Include="image\Article2.jpg" />
+    <Content Include="image\Book.png" />
+    <Content Include="image\global.png" />
+    <Content Include="image\Messi.jpeg" />
+    <Content Include="image\mountain.jpeg" />
+    <Content Include="image\news.jpeg" />
+    <Content Include="image\rocket.png" />
+    <Content Include="image\sport.jpg" />
+    <Content Include="SignIn.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -79,8 +90,16 @@
       <DependentUpon>Home.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SignIn.aspx.cs">
+      <DependentUpon>SignIn.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SignIn.aspx.designer.cs">
+      <DependentUpon>SignIn.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="image\messi1.webp" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
