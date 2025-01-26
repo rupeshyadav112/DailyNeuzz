@@ -1,10 +1,10 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SignIn.aspx.cs" Inherits="DailyNeuzz.SignIn" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SignUp.aspx.cs" Inherits="DailyNeuzz.SignUp" %>
+
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-     <title></title>
-   
+    <title>Sign Up - DailyNeuzz</title>
     <style>
         * {
             margin: 0;
@@ -321,32 +321,45 @@
                 <a href="Home.aspx">Home</a>
                 <a href="#">About</a>
                 <a href="#">News Articles</a>
-                <a href="SignUp.aspx" class="sign-in">Sign Up</a>
+                <a href="SignIn.aspx" class="sign-in">Sign In</a>
             </div>
         </nav>
 
         <main class="signup-container">
             <div class="form-header">
                 <h1>DailyNeuzz</h1><br />
-                <h2>Sign In</h2>
+                <h2>Create a new account</h2>
                 <p class="subtitle">Welcome to Morning Greetings, Please provide your details</p>
             </div>
             
             <div class="signup-box">
                 <div class="signup-form">
                     <div class="form-group">
+                        <label for="username">Username</label>
+                        <asp:TextBox ID="txtUsername" runat="server" CssClass="form-control" placeholder="Choose a username" />
+                        <asp:RequiredFieldValidator ID="rfvUsername" runat="server" ControlToValidate="txtUsername" 
+                            ErrorMessage="Username is required" Display="Dynamic" ForeColor="Red" />
+                    </div>
+                    <div class="form-group">
                         <label for="email">Email</label>
                         <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" placeholder="name@example.com" />
+                        <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail" 
+                            ErrorMessage="Email is required" Display="Dynamic" ForeColor="Red" />
+                        <asp:RegularExpressionValidator ID="revEmail" runat="server" ControlToValidate="txtEmail"
+                            ErrorMessage="Invalid email format" Display="Dynamic" ForeColor="Red"
+                            ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" />
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="form-control" placeholder="Password" />
-                        <asp:Label ID="lblError" runat="server" CssClass="error-label" ForeColor="Red"></asp:Label>
+                        <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="form-control" placeholder="Create a password" />
+                        <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ControlToValidate="txtPassword" 
+                            ErrorMessage="Password is required" Display="Dynamic" ForeColor="Red" />
                     </div>
                     <div class="button-group">
-                        <asp:Button ID="btnSignIn" runat="server" CssClass="signup-btn" Text="Sign In" OnClick="btnSignIn_Click" />
+                        <asp:Label ID="lblError" runat="server" CssClass="error-label" ForeColor="Red"></asp:Label>
+                        <asp:Button ID="btnSignUp" runat="server" CssClass="signup-btn" Text="Sign Up" OnClick="btnSignUp_Click" />
                         <button type="button" class="google-btn">Continue with Google</button>
-                        <p class="login-link">Don't have an account? <a href="SignUp.aspx">Sign Up</a></p>
+                        <p class="login-link">Already have an account? <a href="SignIn.aspx">Sign In</a></p>
                     </div>
                 </div>
             </div>

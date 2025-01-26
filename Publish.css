@@ -1,0 +1,272 @@
+﻿/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: rgb(249, 250, 251);
+    color: rgb(55, 65, 81);
+    line-height: 1.5;
+    padding-top: 73px; /* Account for fixed header */
+}
+
+/* Header styles */
+header {
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: rgb(31, 41, 55);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.search-box {
+    position: relative;
+}
+
+    .search-box input {
+        padding: 0.5rem 2.5rem 0.5rem 1rem;
+        border-radius: 0.5rem;
+        border: none;
+        background-color: rgb(243, 244, 246);
+        width: 200px;
+    }
+
+        .search-box input:focus {
+            outline: none;
+            ring: 2px solid rgb(59, 130, 246);
+        }
+
+.search-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgb(156, 163, 175);
+}
+
+nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+    nav a {
+        color: rgb(75, 85, 99);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+        nav a:hover {
+            color: rgb(31, 41, 55);
+        }
+
+.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Create Post Container */
+.create-post-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+    .create-post-container h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: rgb(31, 41, 55);
+        margin-bottom: 1.5rem;
+    }
+
+/* Form Styles */
+.post-form {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.title-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.375rem;
+    font-size: 1rem;
+}
+
+    .title-input:focus {
+        outline: none;
+        border-color: rgb(59, 130, 246);
+        ring: 2px solid rgb(59, 130, 246);
+    }
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.file-upload {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    padding: 0.5rem 1rem;
+    background-color: rgb(243, 244, 246);
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: rgb(55, 65, 81);
+}
+
+.file-name {
+    color: rgb(107, 114, 128);
+    font-size: 0.875rem;
+}
+
+.upload-btn {
+    padding: 0.5rem 1rem;
+    background-color: rgb(55, 65, 81);
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+/* Editor Toolbar */
+.editor-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: rgb(249, 250, 251);
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+}
+
+.format-select {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.25rem;
+    background-color: white;
+}
+
+.toolbar-btn {
+    padding: 0.25rem 0.5rem;
+    background: none;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.25rem;
+    color: rgb(55, 65, 81);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .toolbar-btn:hover {
+        background-color: rgb(243, 244, 246);
+    }
+
+/* Content Editor */
+.content-editor {
+    width: 100%;
+    min-height: 300px;
+    padding: 1rem;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+    resize: vertical;
+    font-family: inherit;
+}
+
+    .content-editor:focus {
+        outline: none;
+        border-color: rgb(59, 130, 246);
+    }
+
+/* Publish Button */
+.publish-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: rgb(22, 163, 74);
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+    .publish-btn:hover {
+        background-color: rgb(21, 128, 61);
+    }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-right nav {
+        display: none;
+    }
+
+    .search-box {
+        display: none;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .file-upload {
+        width: 100%;
+    }
+
+    .editor-toolbar {
+        flex-wrap: wrap;
+    }
+}
