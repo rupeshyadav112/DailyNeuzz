@@ -110,7 +110,7 @@
     <Content Include="Profile.css" />
     <Content Include="Publish.aspx" />
     <Content Include="Publish.css" />
-    <Content Include="ReadArticle.aspx" />
+    <Content Include="ReadArticles.aspx" />
     <Content Include="SignIn.aspx" />
     <Content Include="SignUp.aspx" />
     <Content Include="Web.config" />
@@ -170,12 +170,12 @@
     <Compile Include="Publish.aspx.designer.cs">
       <DependentUpon>Publish.aspx</DependentUpon>
     </Compile>
-    <Compile Include="ReadArticle.aspx.cs">
-      <DependentUpon>ReadArticle.aspx</DependentUpon>
+    <Compile Include="ReadArticles.aspx.cs">
+      <DependentUpon>ReadArticles.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ReadArticle.aspx.designer.cs">
-      <DependentUpon>ReadArticle.aspx</DependentUpon>
+    <Compile Include="ReadArticles.aspx.designer.cs">
+      <DependentUpon>ReadArticles.aspx</DependentUpon>
     </Compile>
     <Compile Include="SignIn.aspx.cs">
       <DependentUpon>SignIn.aspx</DependentUpon>

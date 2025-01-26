@@ -11,17 +11,8 @@ namespace DailyNeuzz
 {
 
 
-    public partial class ReadArticle
+    public partial class ReadArticles
     {
-
-        /// <summary>
-        /// ltlTitle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlTitle;
 
         /// <summary>
         /// form1 control.
@@ -33,85 +24,103 @@ namespace DailyNeuzz
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// txtSearch control.
+        /// ScriptManager1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSearch;
+        protected global::System.Web.UI.ScriptManager ScriptManager1;
 
         /// <summary>
-        /// btnProfile control.
+        /// lblTitle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnProfile;
+        protected global::System.Web.UI.WebControls.Label lblTitle;
 
         /// <summary>
-        /// ltlArticleTitle control.
+        /// lblCategory control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlArticleTitle;
+        protected global::System.Web.UI.WebControls.Label lblCategory;
 
         /// <summary>
-        /// imgAuthorAvatar control.
+        /// lblDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAuthorAvatar;
+        protected global::System.Web.UI.WebControls.Label lblDate;
 
         /// <summary>
-        /// ltlAuthorName control.
+        /// imgFeatured control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlAuthorName;
+        protected global::System.Web.UI.WebControls.Image imgFeatured;
 
         /// <summary>
-        /// ltlPublishDate control.
+        /// litContent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlPublishDate;
+        protected global::System.Web.UI.WebControls.Literal litContent;
 
         /// <summary>
-        /// imgArticle control.
+        /// UpdatePanel1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgArticle;
+        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
-        /// ltlArticleContent control.
+        /// btnLike control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlArticleContent;
+        protected global::System.Web.UI.WebControls.Button btnLike;
 
         /// <summary>
-        /// rptRelatedArticles control.
+        /// lblLikes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptRelatedArticles;
+        protected global::System.Web.UI.WebControls.Label lblLikes;
+
+        /// <summary>
+        /// btnShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnShare;
+
+        /// <summary>
+        /// pnlAddComment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAddComment;
 
         /// <summary>
         /// txtComment control.
@@ -123,13 +132,13 @@ namespace DailyNeuzz
         protected global::System.Web.UI.WebControls.TextBox txtComment;
 
         /// <summary>
-        /// btnSubmitComment control.
+        /// btnComment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSubmitComment;
+        protected global::System.Web.UI.WebControls.Button btnComment;
 
         /// <summary>
         /// rptComments control.
