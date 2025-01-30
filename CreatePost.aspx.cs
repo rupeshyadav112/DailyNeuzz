@@ -23,6 +23,8 @@ public partial class CreatePost : Page
     {
         ddlCategory.Items.Clear();
         ddlCategory.Items.Add(new ListItem("Select a Category", ""));
+        ddlCategory.Items.Add(new ListItem("World News", "worldnews"));
+        ddlCategory.Items.Add(new ListItem("Local News", "localnews"));
         ddlCategory.Items.Add(new ListItem("Technology", "technology"));
         ddlCategory.Items.Add(new ListItem("Sports", "sports"));
         ddlCategory.Items.Add(new ListItem("Entertainment", "entertainment"));

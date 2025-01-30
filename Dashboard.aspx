@@ -8,7 +8,18 @@
     <title>Dashboard - DailyNeuzz</title>
     <style>
         * {
-    margin: 0;
+    margin: 0;.post-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
+    .post-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
     padding: 0;
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;

@@ -60,12 +60,12 @@ namespace DailyNeuzz
         protected global::System.Web.UI.WebControls.LinkButton lnkLogout;
 
         /// <summary>
-        /// recentPostsPlaceholder control.
+        /// rptRecentPosts control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder recentPostsPlaceholder;
+        protected global::System.Web.UI.WebControls.Repeater rptRecentPosts;
     }
 }

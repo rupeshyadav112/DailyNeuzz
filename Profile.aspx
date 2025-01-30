@@ -364,13 +364,15 @@
     <form id="form1" runat="server">
         <asp:ScriptManager runat="server" />
         
-        <!-- Header -->
+        <!-- हेडर सेक्शन -->
         <header>
             <div class="header-content">
+                <!-- लोगो और नेविगेशन लिंक्स -->
                 <div class="header-left">
                     <a href="Home.aspx" class="header-logo">DailyNeuzz</a>
                 </div>
 
+                <!-- सर्च बॉक्स -->
                 <div class="header-center">
                     <div class="search-box">
                         <input type="text" class="search-input" placeholder="Search..." />
@@ -381,6 +383,7 @@
                     </div>
                 </div>
                 
+                <!-- प्रोफाइल आइकन -->
                 <div class="header-right">
                     <nav class="nav-links">
                         <a href="Home.aspx" class="nav-link">Home</a>
@@ -399,9 +402,9 @@
             </div>
         </header>
 
-        <!-- Main Container -->
+        <!-- मुख्य कंटेनर -->
         <div class="main-container">
-            <!-- Sidebar -->
+            <!-- साइडबार -->
             <aside class="sidebar">
                 <nav class="sidebar-menu">
                     <a href="Profile.aspx" class="sidebar-link active">
@@ -422,16 +425,18 @@
                 </nav>
             </aside>
 
-            <!-- Main Content -->
+            <!-- मुख्य कंटेंट -->
             <main class="main-content">
                 <div class="container">
                     <div class="profile-container">
                         <h2>Update Your Profile</h2>
 
-                        <div id="messagePanel" class="message-panel">
+                        <!-- सफलता/त्रुटि संदेश -->
+                        <div id="messagePanel" runat="server" class="message-panel">
                             <asp:Label ID="lblMessage" runat="server"></asp:Label>
                         </div>
                         
+                        <!-- प्रोफाइल इमेज अपलोड -->
                         <div class="profile-upload" onclick="document.getElementById('fileUpload').click();">
                             <asp:Image ID="imgProfile" runat="server" CssClass="profile-image" Visible="false" />
                             <div id="profilePlaceholder" runat="server" class="profile-placeholder" visible="true">
@@ -451,12 +456,14 @@
 
                         <asp:FileUpload ID="fileUpload" runat="server" ClientIDMode="Static" onchange="handleFileSelect(this);" />
                         
+                        <!-- अपलोड बटन (ऑटो-ट्रिगर) -->
                         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                             <ContentTemplate>
                                 <asp:Button ID="btnUpload" runat="server" Text="Upload" OnClick="btnUpload_Click" Style="display: none;" />
                             </ContentTemplate>
                         </asp:UpdatePanel>
 
+                        <!-- प्रोफाइल फॉर्म -->
                         <div class="form-group">
                             <label for="txtFullName">Full Name</label>
                             <asp:TextBox ID="txtFullName" runat="server" CssClass="form-control"></asp:TextBox>
@@ -472,6 +479,7 @@
                             <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password"></asp:TextBox>
                         </div>
 
+                        <!-- एक्शन बटन -->
                         <div class="form-actions">
                             <asp:Button ID="btnDelete" runat="server" Text="Delete Account" CssClass="delete-btn" OnClick="btnDelete_Click" OnClientClick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');" />
                             <div class="right-actions">
@@ -484,11 +492,12 @@
             </main>
         </div>
 
+        <!-- इमेज प्रीव्यू स्क्रिप्ट -->
         <script type="text/javascript">
             function handleFileSelect(fileUpload) {
                 if (fileUpload.files && fileUpload.files[0]) {
                     var reader = new FileReader();
-                    
+
                     reader.onload = function (e) {
                         var imgProfile = document.getElementById('<%= imgProfile.ClientID %>');
                         var placeholder = document.getElementById('<%= profilePlaceholder.ClientID %>');
@@ -497,10 +506,10 @@
                         imgProfile.style.display = 'block';
                         placeholder.style.display = 'none';
                         
-                        // Trigger the upload button
+                        // अपलोड बटन ऑटो-क्लिक करें
                         document.getElementById('<%= btnUpload.ClientID %>').click();
                     };
-                    
+
                     reader.readAsDataURL(fileUpload.files[0]);
                 }
             }

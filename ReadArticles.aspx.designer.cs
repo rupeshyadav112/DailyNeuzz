@@ -33,85 +33,58 @@ namespace DailyNeuzz
         protected global::System.Web.UI.ScriptManager ScriptManager1;
 
         /// <summary>
-        /// lblTitle control.
+        /// ltlTitle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTitle;
+        protected global::System.Web.UI.WebControls.Literal ltlTitle;
 
         /// <summary>
-        /// lblCategory control.
+        /// imgArticle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCategory;
+        protected global::System.Web.UI.WebControls.Image imgArticle;
 
         /// <summary>
-        /// lblDate control.
+        /// ltlCreatedAt control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDate;
+        protected global::System.Web.UI.WebControls.Literal ltlCreatedAt;
 
         /// <summary>
-        /// imgFeatured control.
+        /// ltlCategory control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgFeatured;
+        protected global::System.Web.UI.WebControls.Literal ltlCategory;
 
         /// <summary>
-        /// litContent control.
+        /// ltlContent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litContent;
+        protected global::System.Web.UI.WebControls.Literal ltlContent;
 
         /// <summary>
-        /// UpdatePanel1 control.
+        /// ltlUsername control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-
-        /// <summary>
-        /// btnLike control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLike;
-
-        /// <summary>
-        /// lblLikes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLikes;
-
-        /// <summary>
-        /// btnShare control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnShare;
+        protected global::System.Web.UI.WebControls.Literal ltlUsername;
 
         /// <summary>
         /// pnlAddComment control.
@@ -132,13 +105,13 @@ namespace DailyNeuzz
         protected global::System.Web.UI.WebControls.TextBox txtComment;
 
         /// <summary>
-        /// btnComment control.
+        /// btnAddComment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnComment;
+        protected global::System.Web.UI.WebControls.Button btnAddComment;
 
         /// <summary>
         /// rptComments control.

@@ -1,4 +1,4 @@
-﻿/* Root Variables */
+/* Root Variables */
 :root {
     --primary-color: #3498db;
     --secondary-color: #2c3e50;
@@ -28,143 +28,6 @@ body {
     padding: 0 20px;
 }
 
-/* Header Styles */
-/*header {
-    background-color: var(--background-color);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: var(--header-height);
-    position: relative;
-}
-
-#profile-section {
-    position: relative;
-    margin-left: 20px;
-}
-
-.profile-dropdown {
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
-
-.profile-image {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: var(--background-color);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    padding: 10px;
-    min-width: 200px;
-    z-index: 1000;
-}
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--secondary-color);
-    text-decoration: none;
-}*/
-
-/* Search Bar Styles */
-/*.search-bar {
-    display: flex;
-    align-items: center;
-    background-color: #f1f3f4;
-    border-radius: 24px;
-    padding: 6px 12px;
-    margin: 0 20px;
-    flex-grow: 1;
-    max-width: 300px;
-}
-
-.search-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    color: #5f6368;
-}
-
-.search-bar input {
-    border: none;
-    background: transparent;
-    font-size: 1rem;
-    width: 100%;
-    outline: none;
-}*/
-
-/* Navigation Styles */
-/*nav ul {
-    display: flex;
-    list-style-type: none;
-}
-
-    nav ul li {
-        margin-left: 20px;
-    }
-
-        nav ul li a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-            nav ul li a:hover {
-                color: var(--primary-color);
-            }*/
-
-/* Login Button Styles */
-/*.login-btn {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-    .login-btn:hover {
-        background-color: #2980b9;
-    }*/
-
-/* Profile Dropdown Styles */
-
-/*.profile-dropdown:hover .dropdown-menu {
-    display: block;
-}
-
-.dropdown-menu a {
-    display: block;
-    padding: 5px 0;
-    color: var(--secondary-color);
-    text-decoration: none;
-}
-
-    .dropdown-menu a:hover {
-        color: var(--primary-color);
-    }*/
-
 /* Main Content Styles */
 main {
     padding-top: var(--header-height);
@@ -175,6 +38,7 @@ main {
     background-color: #f8f9fa;
     padding: 60px 0;
     text-align: center;
+  
 }
 
     .hero h1 {
@@ -283,7 +147,7 @@ main {
     }
 
 /* Recent Posts Section Styles */
-.recent-posts {
+/*.recent-posts {
     padding: 60px 0;
 }
 
@@ -342,7 +206,7 @@ main {
     display: block;
     width: 100%;
     text-align: center;
-}
+}*/
 
 /* Footer Styles */
 footer {

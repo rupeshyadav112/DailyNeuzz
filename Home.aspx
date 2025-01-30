@@ -196,7 +196,7 @@
         .login-btn {
             display: inline-block;
             padding: 0.5rem 1rem;
-            background-color: rgb(79, 70, 229);
+            background-color: #000;
             color: white;
             text-decoration: none;
             border-radius: 0.375rem;
@@ -236,6 +236,96 @@
         }
         .view-more-btn:hover svg {
             transform: translateY(3px);
+        }
+            /* Recent Posts Section */
+        .recent-posts {
+            padding: 4rem 0;
+            background-color: #f9fafb;
+        }
+
+        .recent-posts h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .recent-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .post-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .post-content {
+            padding: 1.5rem;
+        }
+
+        .post-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-category {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .post-description {
+            color: #4b5563;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .button-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .button-secondary:hover {
+            background-color: #34495e;
+        }
+
+        .button-full {
+            width: 100%;
+            text-align: center;
         }
     </style>
 </head>
@@ -350,87 +440,39 @@
 
 
 
-       <!-- Recent Posts Section -->
-<section class="recent-posts">
-    <div class="container" id="recentPostsContainer">
-        <h2>Recent Posts</h2>
-        <div class="posts-grid">
-            <!-- Placeholder for dynamically loading the posts -->
-                    <asp:PlaceHolder ID="recentPostsPlaceholder" runat="server"></asp:PlaceHolder>
-            <article class="post-card">
-                <img src="image/Article1.jpeg?height=200&width=400" alt="Discover Serenity: Top Hidden Travel Gems">
-                <div class="post-content">
-                    <h3 class="post-title">Discover Serenity: Top Hidden Travel Gems</h3>
-                    <p class="post-category">worldnews</p>
-                </div>
-                <div class="post-footer">
-                    <a href="/articles/1" class="button button-secondary button-full">Read Article</a>
-                </div>
-            </article>
-            <article class="post-card">
-                <img src="image/Article2.jpg?height=200&width=400" alt="City Park Revamp Project Brings New Life">
-                <div class="post-content">
-                    <h3 class="post-title">City Park Revamp Project Brings New Life</h3>
-                    <p class="post-category">localnews</p>
-                </div>
-                <div class="post-footer">
-                    <a href="/articles/2" class="button button-secondary button-full">Read Article</a>
-                </div>
-            </article>
-            <article class="post-card">
-                <img src="image/Messi.jpeg?height=200&width=400" alt="Lionel Messi's Magical Hat-Trick">
-                <div class="post-content">
-                    <h3 class="post-title">Lionel Messi's Magical Hat-Trick</h3>
-                    <p class="post-category">sportsnews</p>
-                </div>
-                <div class="post-footer">
-                    <a href="/articles/3" class="button button-secondary button-full">Read Article</a>
-                </div>
-            </article>
-            <article class="post-card">
-                <img src="image/mountain.jpeg?height=200&width=400" alt="Breakthrough Climate Agreement">
-                <div class="post-content">
-                    <h3 class="post-title">Breakthrough Climate Agreement</h3>
-                    <p class="post-category">worldnews</p>
-                </div>
-                <div class="post-footer">
-                    <a href="/articles/4" class="button button-secondary button-full">Read Article</a>
-                </div>
-            </article>
-            <article class="post-card">
-                <img src="image/sport.jpg?height=200&width=400" alt="Sports Fiesta">
-                <div class="post-content">
-                    <h3 class="post-title">Sports Fiesta</h3>
-                    <p class="post-category">worldnews</p>
-                </div>
-                <div class="post-footer">
-                    <a href="/articles/4" class="button button-secondary button-full">Read Article</a>
-                </div>
-            </article>
-            <article class="post-card">
-                <img src="image/Ai.jpg?height=200&width=400" alt="AI Technology">
-                <div class="post-content">
-                    <h3 class="post-title">AI Technology</h3>
-                    <p class="post-category">worldnews</p>
-                </div>
-                <div class="post-footer">
-                    <a href="/articles/4" class="button button-secondary button-full">Read Article</a>
-                </div>
-            </article>
-        </div>
+     <!-- Recent Posts Section -->
+            <section class="recent-posts">
+                <div class="container">
+                    <h2 style="text-align: left;">Recent Posts</h2>
+                    <div class="recent-posts-grid">
+                        <asp:Repeater ID="rptRecentPosts" runat="server">
+                            <ItemTemplate>
+                                <article class="post-card">
+                                <img src='<%# ResolveUrl(Eval("ImagePath").ToString()) %>' alt='<%# Eval("Title") %>' />
+                                    <div class="post-content">
+                                        <h3 class="post-title"><%# Eval("Title") %></h3>
+                                        <p class="post-category"><%# Eval("Category") %></p>
+                                        <%--<p class="post-description"><%# Eval("Content") %></p>--%>
+                                    </div>
+                                    <div class="post-footer">
+                                        <a href='<%# $"ReadArticles.aspx?id={Eval("PostID")}" %>' class="button button-secondary button-full">Read Article</a>
+                                    </div>
+                                </article>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </div>
 
-        <!-- View More Button -->
-        <div class="view-more-container">
-            <a href="NewsArticles.aspx" class="view-more-btn">
-                View More
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <polyline points="19 12 12 19 5 12"></polyline>
-                </svg>
-            </a>
-        </div>
-    </div>
-</section>
+                    <div class="view-more-container">
+                        <a href="NewsArticles.aspx" class="view-more-btn">
+                            View More
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <polyline points="19 12 12 19 5 12"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
 
     </main>
 

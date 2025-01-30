@@ -1,227 +1,210 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI;
+using System.Web.Security;
 using System.Web.UI.WebControls;
 
 namespace DailyNeuzz
 {
     public partial class ReadArticles : System.Web.UI.Page
     {
+        private string connectionString = System.Configuration.ConfigurationManager
+            .ConnectionStrings["DefaultConnection"].ConnectionString;
+        private int postId;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                // URL से PostID प्राप्त करें
-                string postId = Request.QueryString["PostID"];
-                if (!string.IsNullOrEmpty(postId))
+                if (int.TryParse(Request.QueryString["id"], out postId))
                 {
-                    LoadArticle(postId);
-                    LoadComments(postId);
-                    UpdateLikeCount(postId);
+                    LoadPost();
+                    LoadComments();
                 }
                 else
                 {
-                    Response.Redirect("~/NewsArticles.aspx"); // यदि PostID नहीं मिला तो वापस मुख्य पेज पर भेज दें
+                    Response.Redirect("~/NewsArticles.aspx");
                 }
 
-                if (!IsUserLoggedIn())
-                {
-                    pnlAddComment.Visible = false;
-                    btnLike.Enabled = false;
-                }
+                pnlAddComment.Visible = User.Identity.IsAuthenticated;
             }
         }
 
-        private void LoadArticle(string postId)
+        private void LoadPost()
         {
-            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand(@"
-                    SELECT p.*, u.UserName as AuthorName 
-                    FROM Posts p 
-                    LEFT JOIN Users u ON p.UserID = u.UserID 
-                    WHERE p.PostID = @PostID", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Posts WHERE PostID = @PostID", conn))
                 {
                     cmd.Parameters.AddWithValue("@PostID", postId);
                     conn.Open();
+
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            // टाइटल और कंटेंट सेट करें
-                            lblTitle.Text = reader["Title"].ToString();
-                            litContent.Text = reader["Content"].ToString();
+                            ltlTitle.Text = reader["Title"].ToString();
+                            ltlContent.Text = reader["Content"].ToString();
+                            ltlCategory.Text = reader["Category"].ToString();
+                            ltlCreatedAt.Text = Convert.ToDateTime(reader["CreatedAt"]).ToString("MMMM dd, yyyy");
+                            imgArticle.ImageUrl = reader["ImagePath"].ToString();
 
-                            // कैटेगरी और डेट सेट करें
-                            lblCategory.Text = reader["Category"].ToString();
-                            lblDate.Text = Convert.ToDateTime(reader["CreatedAt"]).ToString("dd MMM yyyy");
-
-                            // फॉन्ट स्टाइल अप्लाई करें
                             string fontStyle = reader["FontStyle"].ToString();
                             if (!string.IsNullOrEmpty(fontStyle))
                             {
-                                litContent.Text = $"<div style='font-family: {fontStyle}'>{litContent.Text}</div>";
+                                ltlContent.Text = $"<div style='font-family: {fontStyle};'>{ltlContent.Text}</div>";
                             }
-
-                            // इमेज सेट करें
-                            string imagePath = reader["ImagePath"].ToString();
-                            if (!string.IsNullOrEmpty(imagePath))
-                            {
-                                imgFeatured.ImageUrl = imagePath;
-                                imgFeatured.Visible = true;
-                            }
-                            else
-                            {
-                                imgFeatured.Visible = false;
-                            }
-                        }
-                        else
-                        {
-                            Response.Redirect("~/NewsArticles.aspx"); // यदि पोस्ट नहीं मिला तो वापस भेज दें
                         }
                     }
                 }
             }
         }
 
-        protected void btnLike_Click(object sender, EventArgs e)
+        private void LoadComments()
         {
-            if (!IsUserLoggedIn())
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                Response.Redirect("~/SignIn.aspx");
+                using (SqlCommand cmd = new SqlCommand(@"
+                    SELECT c.*, u.Username 
+                    FROM Comments c 
+                    INNER JOIN Users u ON c.UserID = u.UserID 
+                    WHERE c.PostID = @PostID 
+                    ORDER BY c.CreatedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@PostID", postId);
+
+                    using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        sda.Fill(dt);
+                        rptComments.DataSource = dt;
+                        rptComments.DataBind();
+                    }
+                }
+            }
+        }
+
+        protected void btnAddComment_Click(object sender, EventArgs e)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                Response.Redirect("~/Login.aspx");
                 return;
             }
 
-            string postId = Request.QueryString["PostID"];
-            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
+            int userId = GetCurrentUserId();
+            string comment = txtComment.Text.Trim();
+
+            if (!string.IsNullOrEmpty(comment))
             {
-                using (SqlCommand cmd = new SqlCommand(@"
-                    IF NOT EXISTS (SELECT 1 FROM PostLikes WHERE PostID = @PostID AND UserID = @UserID)
-                    BEGIN
-                        INSERT INTO PostLikes (PostID, UserID, LikedDate) 
-                        VALUES (@PostID, @UserID, @LikedDate)
-                    END", conn))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    cmd.Parameters.AddWithValue("@PostID", postId);
-                    cmd.Parameters.AddWithValue("@UserID", GetCurrentUserId());
-                    cmd.Parameters.AddWithValue("@LikedDate", DateTime.Now);
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
+                    using (SqlCommand cmd = new SqlCommand(@"
+                        INSERT INTO Comments (PostID, UserID, CommentText, CreatedAt)
+                        VALUES (@PostID, @UserID, @CommentText, GETDATE())", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@PostID", postId);
+                        cmd.Parameters.AddWithValue("@UserID", userId);
+                        cmd.Parameters.AddWithValue("@CommentText", comment);
+
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
                 }
-            }
-            UpdateLikeCount(postId);
-        }
 
-        private void UpdateLikeCount(string postId)
-        {
-            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
-            {
-                using (SqlCommand cmd = new SqlCommand(@"
-                    SELECT COUNT(*) FROM PostLikes WHERE PostID = @PostID", conn))
-                {
-                    cmd.Parameters.AddWithValue("@PostID", postId);
-                    conn.Open();
-                    int likeCount = (int)cmd.ExecuteScalar();
-                    lblLikes.Text = likeCount.ToString() + " likes";
-                }
-            }
-        }
-
-        protected void btnComment_Click(object sender, EventArgs e)
-        {
-            if (!IsUserLoggedIn())
-            {
-                Response.Redirect("~/SignIn.aspx");
-                return;
-            }
-
-            string postId = Request.QueryString["PostID"];
-            string userId = GetCurrentUserId();
-            string commentText = txtComment.Text.Trim();
-
-            if (string.IsNullOrEmpty(commentText))
-            {
-                return; // खाली कमेंट न जोड़ें
-            }
-
-            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
-            {
-                using (SqlCommand cmd = new SqlCommand(@"
-                    INSERT INTO PostComments (PostID, UserID, CommentText, CommentDate) 
-                    VALUES (@PostID, @UserID, @CommentText, @CommentDate)", conn))
-                {
-                    cmd.Parameters.AddWithValue("@PostID", postId);
-                    cmd.Parameters.AddWithValue("@UserID", userId);
-                    cmd.Parameters.AddWithValue("@CommentText", commentText);
-                    cmd.Parameters.AddWithValue("@CommentDate", DateTime.Now);
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
-
-            txtComment.Text = "";
-            LoadComments(postId);
-        }
-
-        private void LoadComments(string postId)
-        {
-            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
-            {
-                using (SqlCommand cmd = new SqlCommand(@"
-                    SELECT pc.*, u.UserName 
-                    FROM PostComments pc 
-                    INNER JOIN Users u ON pc.UserID = u.UserID 
-                    WHERE pc.PostID = @PostID 
-                    ORDER BY pc.CommentDate DESC", conn))
-                {
-                    cmd.Parameters.AddWithValue("@PostID", postId);
-                    conn.Open();
-                    rptComments.DataSource = cmd.ExecuteReader();
-                    rptComments.DataBind();
-                }
+                txtComment.Text = string.Empty;
+                LoadComments();
             }
         }
 
         protected void rptComments_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            if (e.CommandName == "DeleteComment")
+            if (!User.Identity.IsAuthenticated)
             {
-                string commentId = e.CommandArgument.ToString();
-                DeleteComment(commentId);
-                LoadComments(Request.QueryString["PostID"]);
+                Response.Redirect("~/Login.aspx");
+                return;
             }
+
+            int commentId = Convert.ToInt32(e.CommandArgument);
+
+            switch (e.CommandName)
+            {
+                case "Delete":
+                    DeleteComment(commentId);
+                    break;
+                case "Edit":
+                    // Implement edit functionality
+                    break;
+            }
+
+            LoadComments();
         }
 
-        private void DeleteComment(string commentId)
+        private void DeleteComment(int commentId)
         {
-            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
+            int userId = GetCurrentUserId();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 using (SqlCommand cmd = new SqlCommand(@"
-                    DELETE FROM PostComments 
+                    DELETE FROM Comments 
                     WHERE CommentID = @CommentID AND UserID = @UserID", conn))
                 {
                     cmd.Parameters.AddWithValue("@CommentID", commentId);
-                    cmd.Parameters.AddWithValue("@UserID", GetCurrentUserId());
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+
                     conn.Open();
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        protected bool IsUserLoggedIn()
+        protected bool IsCommentAuthor(object commentUserId)
         {
-            return Session["UserId"] != null;
+            if (!User.Identity.IsAuthenticated) return false;
+            int currentUserId = GetCurrentUserId();
+            return currentUserId == Convert.ToInt32(commentUserId);
         }
 
-        public string GetCurrentUserId()
+        private int GetCurrentUserId()
         {
-            return Session["UserId"]?.ToString();
+            // Implement this method to return the current user's ID
+            // This will depend on how you're handling authentication in your application
+            throw new NotImplementedException();
+        }
+        protected string GetTimeAgo(object dateObj)
+        {
+            DateTime commentDate = Convert.ToDateTime(dateObj);
+            TimeSpan timePassed = DateTime.Now - commentDate;
+
+            if (timePassed.TotalDays >= 1)
+            {
+                int days = (int)timePassed.TotalDays;
+                return $"{days} days ago";
+            }
+            else if (timePassed.TotalHours >= 1)
+            {
+                int hours = (int)timePassed.TotalHours;
+                return $"{hours} hours ago";
+            }
+            else if (timePassed.TotalMinutes >= 1)
+            {
+                int minutes = (int)timePassed.TotalMinutes;
+                return $"{minutes} minutes ago";
+            }
+            else
+            {
+                return "just now";
+            }
         }
 
-        private string GetConnectionString()
+        protected string GetUserAvatar(object userId)
         {
-            return System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            // Implement this method to return the user's avatar URL
+            // You might want to store avatar URLs in your database
+            return ResolveUrl("~/images/default-avatar.png");
         }
     }
 }

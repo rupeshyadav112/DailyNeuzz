@@ -1,84 +1,67 @@
-using System;
+﻿using System;
 using System.IO;
-using System.Web.UI;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Web;
+using System.Web.UI;
+using System.Web.Security;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Web.UI.WebControls;
-using System.Web.UI.HtmlControls;
 
 namespace DailyNeuzz
 {
     public partial class Profile : System.Web.UI.Page
     {
+        private string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            // यूजर ऑथेंटिकेशन चेक करें
+            if (!User.Identity.IsAuthenticated)
+            {
+                //Response.Redirect("~/Profile.aspx"); // लॉगिन पेज पर रीडायरेक्ट
+                //return;
+            }
+
             if (!IsPostBack)
             {
-                // Initialize message panel
-                var messagePanel = FindControl("messagePanel") as WebControl;
-                if (messagePanel != null)
-                {
-                    messagePanel.Visible = true;
-                    messagePanel.Attributes["style"] = "display: none;";
-                }
-                
-                LoadProfileData();
+                LoadUserProfile(); // प्रोफाइल डेटा लोड करें
             }
         }
 
-        private int GetCurrentUserId()
+        // प्रोफाइल डेटा लोड करें
+        private void LoadUserProfile()
         {
-            if (Session["UserId"] == null)
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                Response.Redirect("Home.aspx");
-                return 0;
-            }
-            return Convert.ToInt32(Session["UserId"]);
-        }
+                // डेटाबेस से प्रोफाइल डेटा फ़ेच करें
+                string query = @"SELECT FullName, Email, ProfileImagePath 
+                               FROM Users 
+                               WHERE Username = @Username";
 
-        private void LoadProfileData()
-        {
-            if (Session["UserId"] == null)
-            {
-                Response.Redirect("Home.aspx");
-                return;
-            }
-
-            int userId = GetCurrentUserId();
-
-            // First set the values from session
-            if (Session["FullName"] != null)
-            {
-                txtFullName.Text = Session["FullName"].ToString();
-            }
-            if (Session["UserEmail"] != null)
-            {
-                txtEmail.Text = Session["UserEmail"].ToString();
-            }
-
-            // Then get profile image from database
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT ProfileImagePath FROM Users WHERE UserId = @UserId", conn))
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.Parameters.AddWithValue("@Username", User.Identity.Name);
+                    conn.Open();
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            string imagePath = reader["ProfileImagePath"].ToString();
-                            if (!string.IsNullOrEmpty(imagePath))
+                            txtFullName.Text = reader["FullName"].ToString();
+                            txtEmail.Text = reader["Email"].ToString();
+
+                            // प्रोफाइल इमेज सेट करें
+                            if (reader["ProfileImagePath"] != DBNull.Value)
                             {
-                                // Set main profile image
-                                imgProfile.ImageUrl = "~/Uploads/ProfileImages/" + imagePath;
+                                string imagePath = reader["ProfileImagePath"].ToString();
+                                imgProfile.ImageUrl = ResolveUrl(imagePath);
                                 imgProfile.Visible = true;
                                 profilePlaceholder.Visible = false;
 
-                                // Set header profile image
-                                headerProfileImg.ImageUrl = "~/Uploads/ProfileImages/" + imagePath;
+                                // हेडर इमेज अपडेट करें
+                                headerProfileImg.ImageUrl = ResolveUrl(imagePath);
                                 headerProfileImg.Visible = true;
                                 headerProfilePlaceholder.Visible = false;
                             }
@@ -88,242 +71,154 @@ namespace DailyNeuzz
             }
         }
 
-        private bool ValidateProfileUpdate()
+        // पासवर्ड हैशिंग मेथड
+        private string HashPassword(string password)
         {
-            string email = txtEmail.Text.Trim();
-            string fullName = txtFullName.Text.Trim();
-
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(fullName))
+            using (SHA256 sha256 = SHA256.Create())
             {
-                ShowMessage("Email and Full Name are required.", false);
-                return false;
+                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(hashedBytes);
             }
-
-            // Validate email format
-            if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            {
-                ShowMessage("Please enter a valid email address.", false);
-                return false;
-            }
-
-            return true;
         }
 
+        // प्रोफाइल अपडेट बटन
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
-            try
+            if (ValidateProfile())
             {
-                if (!ValidateProfileUpdate())
+                string query = @"UPDATE Users 
+                               SET FullName = @FullName, 
+                                   Email = @Email, 
+                                   Password = COALESCE(@Password, Password) 
+                               WHERE Username = @Username";
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    return;
-                }
-
-                int userId = GetCurrentUserId();
-                string fullName = txtFullName.Text.Trim();
-                string email = txtEmail.Text.Trim();
-
-                using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
-                {
-                    conn.Open();
-                    using (SqlCommand cmd = new SqlCommand(
-                        @"UPDATE Users 
-                          SET FullName = @FullName, 
-                              Email = @Email
-                          WHERE UserId = @UserId", conn))
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@FullName", fullName);
-                        cmd.Parameters.AddWithValue("@Email", email);
-                        cmd.Parameters.AddWithValue("@UserId", userId);
+                        cmd.Parameters.AddWithValue("@Username", User.Identity.Name);
+                        cmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
 
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    // Update password if provided
-                    if (!string.IsNullOrEmpty(txtPassword.Text))
-                    {
-                        using (SqlCommand cmd = new SqlCommand(
-                            "UPDATE Users SET Password = @Password WHERE UserId = @UserId", conn))
+                        // पासवर्ड अपडेट (ऑप्शनल)
+                        if (!string.IsNullOrEmpty(txtPassword.Text))
                         {
-                            cmd.Parameters.AddWithValue("@Password", txtPassword.Text);
-                            cmd.Parameters.AddWithValue("@UserId", userId);
+                            cmd.Parameters.AddWithValue("@Password", HashPassword(txtPassword.Text));
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@Password", DBNull.Value);
+                        }
+
+                        try
+                        {
+                            conn.Open();
                             cmd.ExecuteNonQuery();
+                            ShowMessage("Profile updated successfully!", true);
+                        }
+                        catch (Exception ex)
+                        {
+                            ShowMessage("Error: " + ex.Message, false);
                         }
                     }
                 }
-
-                // Update session values
-                Session["FullName"] = fullName;
-                Session["UserEmail"] = email;
-
-                ShowMessage("Profile updated successfully!");
-            }
-            catch (Exception ex)
-            {
-                ShowMessage("Failed to update profile: " + ex.Message, false);
             }
         }
 
+        // प्रोफाइल इमेज अपलोड
         protected void btnUpload_Click(object sender, EventArgs e)
         {
             if (fileUpload.HasFile)
             {
                 try
                 {
-                    string fileName = Path.GetFileName(fileUpload.FileName);
-                    string extension = Path.GetExtension(fileName);
+                    // फ़ाइल नाम और पाथ जेनरेट करें
+                    string fileName = Guid.NewGuid() + Path.GetExtension(fileUpload.FileName);
+                    string uploadDir = Server.MapPath("~/Uploads/ProfileImages/");
+                    Directory.CreateDirectory(uploadDir); // डायरेक्टरी बनाएँ
+                    string filePath = Path.Combine(uploadDir, fileName);
+                    fileUpload.SaveAs(filePath);
 
-                    // Validate file type
-                    if (!extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase) &&
-                        !extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) &&
-                        !extension.Equals(".png", StringComparison.OrdinalIgnoreCase))
+                    // डेटाबेस में पाथ अपडेट करें
+                    string relativePath = "~/Uploads/ProfileImages/" + fileName;
+                    using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        ShowMessage("Only .jpg, .jpeg, and .png files are allowed.", false);
-                        return;
+                        string query = "UPDATE Users SET ProfileImagePath = @Path WHERE Username = @Username";
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@Path", relativePath);
+                            cmd.Parameters.AddWithValue("@Username", User.Identity.Name);
+                            conn.Open();
+                            cmd.ExecuteNonQuery();
+                        }
                     }
 
-                    // Validate file size (5MB)
-                    if (fileUpload.FileBytes.Length > 5 * 1024 * 1024)
-                    {
-                        ShowMessage("File size should be less than 5MB.", false);
-                        return;
-                    }
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + extension;
-                    string uploadPath = Server.MapPath("~/Uploads/ProfileImages/");
-
-                    // Create directory if it doesn't exist
-                    if (!Directory.Exists(uploadPath))
-                    {
-                        Directory.CreateDirectory(uploadPath);
-                    }
-
-                    // Delete old profile image
-                    DeleteOldProfileImage(GetCurrentUserId());
-
-                    // Save new image
-                    fileUpload.SaveAs(Path.Combine(uploadPath, uniqueFileName));
-
-                    // Update database
-                    UpdateProfileImage(uniqueFileName);
-
-                    // Update UI for main profile image
-                    imgProfile.ImageUrl = "~/Uploads/ProfileImages/" + uniqueFileName;
+                    // UI अपडेट करें
+                    imgProfile.ImageUrl = ResolveUrl(relativePath);
                     imgProfile.Visible = true;
                     profilePlaceholder.Visible = false;
 
-                    // Update UI for header profile image
-                    headerProfileImg.ImageUrl = "~/Uploads/ProfileImages/" + uniqueFileName;
+                    // हेडर इमेज अपडेट
+                    headerProfileImg.ImageUrl = ResolveUrl(relativePath);
                     headerProfileImg.Visible = true;
                     headerProfilePlaceholder.Visible = false;
 
-                    ShowMessage("Profile image updated successfully!");
+                    ShowMessage("Profile image updated!", true);
                 }
                 catch (Exception ex)
                 {
-                    ShowMessage("Failed to upload image: " + ex.Message, false);
+                    ShowMessage("Error uploading image: " + ex.Message, false);
                 }
             }
         }
 
+        // प्रोफाइल वैलिडेशन
+        private bool ValidateProfile()
+        {
+            if (string.IsNullOrEmpty(txtFullName.Text) || string.IsNullOrEmpty(txtEmail.Text))
+            {
+                ShowMessage("Full Name and Email are required.", false);
+                return false;
+            }
+
+            if (!Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                ShowMessage("Invalid email format.", false);
+                return false;
+            }
+
+            return true;
+        }
+
+        // संदेश दिखाएँ
+        private void ShowMessage(string message, bool isSuccess)
+        {
+            lblMessage.Text = message;
+            messagePanel.Attributes["class"] = $"message-panel {(isSuccess ? "success-message" : "error-message")}";
+            ClientScript.RegisterStartupScript(GetType(), "showMessage", "setTimeout(() => { document.getElementById('messagePanel').style.display = 'none'; }, 3000);", true);
+        }
+
+        // लॉगआउट बटन
         protected void btnSignOut_Click(object sender, EventArgs e)
         {
+            FormsAuthentication.SignOut();
             Session.Clear();
-            Response.Redirect("Home.aspx");
+            Response.Redirect("~/SignIn.aspx");
         }
 
+        // अकाउंट डिलीट बटन
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            try
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                int userId = GetCurrentUserId();
-
-                // Delete profile image first
-                DeleteOldProfileImage(userId);
-
-                // Delete user from database
-                using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
+                string query = "DELETE FROM Users WHERE Username = @Username";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
+                    cmd.Parameters.AddWithValue("@Username", User.Identity.Name);
                     conn.Open();
-                    using (SqlCommand cmd = new SqlCommand("DELETE FROM Users WHERE UserId = @UserId", conn))
-                    {
-                        cmd.Parameters.AddWithValue("@UserId", userId);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                // Clear session and redirect
-                Session.Clear();
-                Response.Redirect("Home.aspx");
-            }
-            catch (Exception ex)
-            {
-                ShowMessage("Failed to delete account: " + ex.Message, false);
-            }
-        }
-
-        private void DeleteOldProfileImage(int userId)
-        {
-            string oldImagePath = string.Empty;
-
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT ProfileImagePath FROM Users WHERE UserId = @UserId", conn))
-                {
-                    cmd.Parameters.AddWithValue("@UserId", userId);
-                    object result = cmd.ExecuteScalar();
-                    if (result != null && result != DBNull.Value)
-                    {
-                        oldImagePath = result.ToString();
-                    }
-                }
-            }
-
-            if (!string.IsNullOrEmpty(oldImagePath))
-            {
-                string fullPath = Server.MapPath("~/Uploads/ProfileImages/" + oldImagePath);
-                if (File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
-            }
-        }
-
-        private void UpdateProfileImage(string fileName)
-        {
-            int userId = GetCurrentUserId();
-
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(
-                    "UPDATE Users SET ProfileImagePath = @ImagePath WHERE UserId = @UserId", conn))
-                {
-                    cmd.Parameters.AddWithValue("@ImagePath", fileName);
-                    cmd.Parameters.AddWithValue("@UserId", userId);
                     cmd.ExecuteNonQuery();
+                    btnSignOut_Click(sender, e); // लॉगआउट करें
                 }
-            }
-        }
-
-        private void ShowMessage(string message, bool isSuccess = true)
-        {
-            var messagePanel = FindControl("messagePanel") as WebControl;
-            var lblMessage = FindControl("lblMessage") as Label;
-            
-            if (messagePanel != null && lblMessage != null)
-            {
-                messagePanel.Attributes["class"] = "message-panel " + (isSuccess ? "success-message" : "error-message");
-                lblMessage.Text = message;
-                
-                ScriptManager.RegisterStartupScript(this, GetType(), "showMessage",
-                    @"var panel = document.getElementById('messagePanel');
-                      if(panel) {
-                          panel.style.display = 'block';
-                          setTimeout(function() { 
-                              panel.style.display = 'none';
-                          }, 3000);
-                      }", true);
             }
         }
     }

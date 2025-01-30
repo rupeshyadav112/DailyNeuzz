@@ -1,6 +1,10 @@
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
+using System.Web.Security;
 
 namespace DailyNeuzz
 {
@@ -8,20 +12,18 @@ namespace DailyNeuzz
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+            if (User.Identity.IsAuthenticated)
             {
-                try
-                {
-                    using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
-                    {
-                        conn.Open();
-                        lblError.Text = "Database connection successful!";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    lblError.Text = "Database connection failed: " + ex.Message;
-                }
+                Response.Redirect("~/Home.aspx");
+            }
+        }
+
+        private string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(hashedBytes);
             }
         }
 
@@ -29,9 +31,8 @@ namespace DailyNeuzz
         {
             string email = txtEmail.Text.Trim();
             string password = txtPassword.Text;
-
             // 1. Check hardcoded credentials
-            if (email == "ryadav943@rku.ac.in" && password == "123123")
+            if (email == "ryadav943@rku.ac.in" && password == "Admin")
             {
                 Session["UserEmail"] = email;
                 Session["UserId"] = 1; // Hardcoded user ID
@@ -40,44 +41,67 @@ namespace DailyNeuzz
                 return;
             }
 
-            // 2. Check database credentials
-            string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            string query = "SELECT UserId, Email, Username, FullName FROM Users WHERE Email = @Email AND Password = @Password";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                lblError.Text = "Please enter email and password";
+                return;
+            }
+
+            string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            string query = @"SELECT UserID, Username, FullName, Password, ProfileImagePath 
+                     FROM Users WHERE Email = @Email"; // ProfileImagePath कॉलम जोड़ें
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    cmd.Parameters.AddWithValue("@Email", email);
-                    cmd.Parameters.AddWithValue("@Password", password);
-
-                    try
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
+                        cmd.Parameters.AddWithValue("@Email", email);
+
                         conn.Open();
-                        SqlDataReader reader = cmd.ExecuteReader();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                string storedHash = reader["Password"].ToString();
+                                string inputHash = HashPassword(password);
 
-                        if (reader.HasRows)
-                        {
-                            reader.Read();
-                            Session["UserId"] = Convert.ToInt32(reader["UserId"]);
-                            Session["UserEmail"] = reader["Email"].ToString();
-                            Session["Username"] = reader["Username"].ToString();
-                            Session["FullName"] = reader["FullName"].ToString();
-                            reader.Close();
-                            conn.Close();
-                            Response.Redirect("Home.aspx");
+                                if (storedHash == inputHash)
+                                {
+                                    // Session Management
+                                    Session["UserID"] = reader["UserID"];
+                                    Session["UserEmail"] = email;
+                                    Session["Username"] = reader["Username"];
+                                    Session["FullName"] = reader["FullName"];
+
+
+                                    // ProfileImagePath को Session में सेट करें
+                                    Session["UserProfileImage"] = reader["ProfileImagePath"]?.ToString();
+
+                                    // Authentication Cookie
+                                    FormsAuthentication.SetAuthCookie(email, false);
+
+                                    Response.Redirect("~/Home.aspx");
+                                }
+                                else
+                                {
+                                    lblError.Text = "Invalid credentials";
+                                }
+                            }
+                            else
+                            {
+                                lblError.Text = "User not found";
+                            }
                         }
-                        else
-                        {
-                            lblError.Text = "Invalid email or password.";
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        lblError.Text = "Error: " + ex.Message;
-                        System.Diagnostics.Debug.WriteLine("Login Error: " + ex.ToString());
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Secure error handling
+                lblError.Text = "Login failed. Please try again.";
+                System.Diagnostics.Debug.WriteLine($"Login Error: {ex}");
             }
         }
     }

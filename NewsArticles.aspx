@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="NewsArticles.aspx.cs" Inherits="DailyNeuzz.NewsArticles" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="NewsArticles.aspx.cs" Inherits="DailyNeuzz.NewsArticles" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -265,64 +265,78 @@
             background: #dc2626;
         }
 
-        /* Articles Grid */
-        .articles-container h1 {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            color: #111827;
-            margin-top: 1rem;
-        }
+ <!-- Update the Articles Grid CSS section in your style tag -->
+/* Articles Grid Styles */
+.articles-container {
+    margin-top: 0.5rem;
+}
+      .articles-container h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #111827;
+    margin-top: 0;
+    padding-top: 1rem;
+}
 
-        .articles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-        }
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
 
-        .article-card {
-            background: white;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-        }
+.article-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
 
-        .article-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
+.article-card:hover {
+    transform: translateY(-4px);
+}
 
-        .article-content {
-            padding: 1.5rem;
-        }
+.article-image {
+    width: 100%;
+    height: 200px; /* Fixed height for consistent look */
+    object-fit: cover;
+    display: block;
+}
 
-        .article-title {
-            font-size: 1.125rem;
-            margin-bottom: 0.5rem;
-            color: #111827;
-        }
+.article-content {
+    padding: 1rem;
+}
 
-        .article-category {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-bottom: 1rem;
-        }
+.article-category {
+    font-size: 0.875rem;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
 
-        .read-article {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            text-align: center;
-            background: #f3f4f6;
-            color: #111827;
-            text-decoration: none;
-            border-radius: 0.375rem;
-            transition: background-color 0.2s;
-        }
+.article-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
 
-        .read-article:hover {
-            background: #e5e7eb;
-        }
+.read-article {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    background: #2d3748;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.read-article:hover {
+    background: #1a202c;
+}
 
         /* Footer */
         footer {
@@ -429,7 +443,6 @@
                                 <asp:Label ID="headerUsername" runat="server" Text="Username"></asp:Label>
                             </div>
                             <a href="Profile.aspx" class="dropdown-item">Profile</a>
-                            <a href="Settings.aspx" class="dropdown-item">Settings</a>
                             <a href="Logout.aspx" class="dropdown-item">Logout</a>
                         </div>
                     </div>
@@ -438,99 +451,59 @@
         </header>
 
         <main class="main-container">
-            <aside class="filters">
-                <h2>Filters</h2>
-                <div class="filter-group">
-                    <label for="search-term">Search Term:</label>
-                    <input type="text" id="search-term">
-                </div>
-                <div class="filter-group">
-                    <label for="sort-by">Sort By</label>
-                    <select id="sort-by">
-                        <option value="">Select an option</option>
-                        <option value="date">Date</option>
-                        <option value="popularity">Popularity</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="category">Category:</label>
-                    <select id="category">
-                        <option value="">Select a Category</option>
-                        <option value="worldnews">World News</option>
-                        <option value="localnews">Local News</option>
-                        <option value="sportsnews">Sports News</option>
-                    </select>
-                </div>
-                <asp:Button ID="Button1" runat="server" Text="Apply Filter" class="apply-filters" OnClick="Button1_Click" />
-            </aside>
+           <aside class="filters">
+        <h2>Filters</h2>
+        <div class="filter-group">
+            <label for="txtSearchTerm">Search Term:</label>
+            <asp:TextBox ID="txtSearchTerm" runat="server" CssClass="form-control"></asp:TextBox>
+        </div>
+        <div class="filter-group">
+            <label for="ddlSortBy">Sort By</label>
+            <asp:DropDownList ID="ddlSortBy" runat="server" CssClass="form-control">
+                <asp:ListItem Value="">Select an option</asp:ListItem>
+                <asp:ListItem Value="date">Date</asp:ListItem>
+                <asp:ListItem Value="popularity">Popularity</asp:ListItem>
+            </asp:DropDownList>
+        </div>
+        <div class="filter-group">
+            <label for="ddlCategory">Category:</label>
+            <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control">
+                <asp:ListItem Value="">Select a Category</asp:ListItem>
+                <asp:ListItem Value="worldnews">World News</asp:ListItem>
+                <asp:ListItem Value="localnews">Local News</asp:ListItem>
+                <asp:ListItem Value="sportsnews">Sports</asp:ListItem>
+                <asp:ListItem Value="entertainment">Entertainment</asp:ListItem>
+                <asp:ListItem Value="technology">Technology</asp:ListItem>
+            </asp:DropDownList>
+        </div>
+        <asp:Button ID="btnApplyFilters" runat="server" Text="Apply Filter" CssClass="apply-filters" OnClick="btnApplyFilters_Click" />
+    </aside>
 
+
+            <!-- Total articles here -->
             <section class="articles-container">
                 <h1>News Articles</h1>
                 <div class="articles-grid">
-                    <article class="article-card">
-                        <img src="image/mountain.jpeg" alt="Mountain lake reflection" class="article-image">
-                        <div class="article-content">
-                            <h2 class="article-title">Discover Serenity: Top Hidden Travel Gems</h2>
-                            <p class="article-category">worldnews</p>
-                            <a href="#" class="read-article">Read Article</a>
-                        </div>
-                    </article>
-                    <article class="article-card">
-                        <img src="image/Article1.jpeg?height=200&width=400" alt="Mountain valley" class="article-image">
-                        <div class="article-content">
-                            <h2 class="article-title">City Park Revamp Project Brings New Life</h2>
-                            <p class="article-category">localnews</p>
-                            <a href="#" class="read-article">Read Article</a>
-                        </div>
-                    </article>
-                    <article class="article-card">
-                        <img src="image/Messi.jpeg?height=200&width=400" alt="Soccer player" class="article-image">
-                        <div class="article-content">
-                            <h2 class="article-title">Lionel Messi's Magical Hat-Trick</h2>
-                            <p class="article-category">sportsnews</p>
-                            <a href="#" class="read-article">Read Article</a>
-                        </div>
-                    </article>
-                    <article class="article-card">
-                        <img src="image/Article2.jpg?height=200&width=400" alt="Aerial view of houses" class="article-image">
-                        <div class="article-content">
-                            <h2 class="article-title">Breakthrough Climate Agreement</h2>
-                            <p class="article-category">worldnews</p>
-                            <a href="#" class="read-article">Read Article</a>
-                        </div>
-                    </article>
-                    <article class="article-card">
-                        <img src="image/sport.jpg?height=200&width=400" alt="Empty road with mountains" class="article-image">
-                        <div class="article-content">
-                            <h2 class="article-title">Television</h2>
-                            <p class="article-category">entertainment</p>
-                            <a href="#" class="read-article">Read Article</a>
-                        </div>
-                    </article>
-                    <article class="article-card">
-                        <img src="image/sport.jpg?height=200&width=400" alt="Space shuttle launch" class="article-image">
-                        <div class="article-content">
-                            <h2 class="article-title">India's Chare Curasce What's Next</h2>
-                            <p class="article-category">science</p>
-                            <a href="#" class="read-article">Read Article</a>
-                        </div>
-                    </article>
-                    <article class="article-card">
-                        <img src="image/sport.jpg?height=200&width=400" alt="Robot hand touching human hand" class="article-image">
-                        <div class="article-content">
-                            <h2 class="article-title">The Dalal AI in tha Israeli-Palestin</h2>
-                            <p class="article-category">technology</p>
-                            <a href="#" class="read-article">Read Article</a>
-                        </div>
-                    </article>
-                    <article class="article-card">
-                        <img src="image/sport.jpg?height=200&width=400" alt="Industrial scene" class="article-image">
-                        <div class="article-content">
-                            <h2 class="article-title">Climate ChannelVar Talakwque frn</h2>
-                            <p class="article-category">environment</p>
-                            <a href="#" class="read-article">Read Article</a>
-                        </div>
-                    </article>
+                   <!-- Update Repeater Section -->
+<asp:Repeater ID="rptArticles" runat="server">
+    <ItemTemplate>
+        <article class="article-card">
+            <asp:Image 
+                ID="imgArticle" 
+                runat="server" 
+                ImageUrl='<%# Eval("ImagePath") != DBNull.Value ? ResolveUrl(Eval("ImagePath").ToString()) : ResolveUrl("~/images/default.jpg") %>' 
+                CssClass="article-image" 
+                AlternateText='<%# Eval("Title") %>' />
+            
+            <div class="article-content">
+                <h2 class="article-title"><%# Eval("Title") %></h2>
+                <p class="article-category"><%# Eval("Category") %></p>
+                <p class="article-date"><%# Convert.ToDateTime(Eval("CreatedAt")).ToString("dd MMM yyyy") %></p>
+                <a href='<%# $"ReadArticle.aspx?id={Eval("PostID")}" %>' class="read-article">Read Full Article</a>
+            </div>
+        </article>
+    </ItemTemplate>
+</asp:Repeater>
                 </div>
             </section>
         </main>

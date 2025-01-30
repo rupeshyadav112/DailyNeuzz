@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace DailyNeuzz
 {
@@ -11,12 +10,93 @@ namespace DailyNeuzz
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!IsPostBack)
+            {
+                LoadAllPosts();
+            }
         }
 
-        protected void Button1_Click(object sender, EventArgs e)
+        private void LoadAllPosts()
         {
+            string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT PostID, Title, Content, Category, ImagePath, FontStyle, CreatedAt FROM Posts ORDER BY CreatedAt DESC", conn))
+                {
+                    try
+                    {
+                        conn.Open();
+                        rptArticles.DataSource = cmd.ExecuteReader();
+                        rptArticles.DataBind();
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.Write($"<script>alert('Error: {ex.Message.Replace("'", "")}');</script>");
+                    }
+                }
+            }
+        }
 
+        protected void btnApplyFilters_Click(object sender, EventArgs e)
+        {
+            string searchTerm = txtSearchTerm.Text.Trim();
+            string sortBy = ddlSortBy.SelectedValue;
+            string category = ddlCategory.SelectedValue;
+
+            string query = "SELECT PostID, Title, Content, Category, ImagePath, FontStyle, CreatedAt FROM Posts WHERE 1=1";
+
+            // Filters
+            if (!string.IsNullOrEmpty(searchTerm))
+                query += " AND (Title LIKE @SearchTerm OR Content LIKE @SearchTerm)";
+
+            if (!string.IsNullOrEmpty(category))
+                query += " AND Category = @Category";
+
+            // Sorting
+            switch (sortBy)
+            {
+                case "date":
+                    query += " ORDER BY CreatedAt DESC";
+                    break;
+                case "popularity":
+                    query += " ORDER BY CreatedAt DESC";
+                    break;
+                default:
+                    query += " ORDER BY CreatedAt DESC";
+                    break;
+            }
+
+            string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    if (!string.IsNullOrEmpty(searchTerm))
+                        cmd.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
+
+                    if (!string.IsNullOrEmpty(category))
+                        cmd.Parameters.AddWithValue("@Category", category);
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    rptArticles.DataSource = dt;
+                    rptArticles.DataBind();
+
+                    // Reset Filters after Data Binding
+                    txtSearchTerm.Text = string.Empty;
+                    ddlSortBy.SelectedIndex = 0;
+                    ddlCategory.SelectedIndex = 0;
+                }
+                catch (Exception ex)
+                {
+                    Response.Write($"<script>alert('Error: {ex.Message.Replace("'", "")}');</script>");
+                }
+            }
         }
     }
 }
