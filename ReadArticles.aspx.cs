@@ -5,13 +5,16 @@ using System.Data.SqlClient;
 using System.Web.UI;
 using System.Web.Security;
 using System.Web.UI.WebControls;
+using System.Text.RegularExpressions;
+using System.Web.UI.HtmlControls;
+using System.Xml.Linq;
 
 namespace DailyNeuzz
 {
     public partial class ReadArticles : System.Web.UI.Page
     {
         private string connectionString = System.Configuration.ConfigurationManager
-            .ConnectionStrings["DefaultConnection"].ConnectionString;
+           .ConnectionStrings["DefaultConnection"].ConnectionString;
         private int postId;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -22,13 +25,12 @@ namespace DailyNeuzz
                 {
                     LoadPost();
                     LoadComments();
+                    LoadRecentArticles();
                 }
                 else
                 {
-                    Response.Redirect("~/NewsArticles.aspx");
+                    Response.Redirect("~/Default.aspx");
                 }
-
-                pnlAddComment.Visible = User.Identity.IsAuthenticated;
             }
         }
 
@@ -50,12 +52,10 @@ namespace DailyNeuzz
                             ltlCategory.Text = reader["Category"].ToString();
                             ltlCreatedAt.Text = Convert.ToDateTime(reader["CreatedAt"]).ToString("MMMM dd, yyyy");
                             imgArticle.ImageUrl = reader["ImagePath"].ToString();
-
-                            string fontStyle = reader["FontStyle"].ToString();
-                            if (!string.IsNullOrEmpty(fontStyle))
-                            {
-                                ltlContent.Text = $"<div style='font-family: {fontStyle};'>{ltlContent.Text}</div>";
-                            }
+                        }
+                        else
+                        {
+                            Response.Redirect("~/Default.aspx");
                         }
                     }
                 }
@@ -81,6 +81,29 @@ namespace DailyNeuzz
                         sda.Fill(dt);
                         rptComments.DataSource = dt;
                         rptComments.DataBind();
+                    }
+                }
+            }
+        }
+
+        private void LoadRecentArticles()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(@"
+                    SELECT TOP 5 PostID, Title, Content, Category, ImagePath, CreatedAt 
+                    FROM Posts 
+                    WHERE PostID IS NOT NULL AND PostID != @CurrentPostID
+                    ORDER BY CreatedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@CurrentPostID", postId);
+
+                    using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        sda.Fill(dt);
+                        rptRecentArticles.DataSource = dt;
+                        rptRecentArticles.DataBind();
                     }
                 }
             }
@@ -135,7 +158,7 @@ namespace DailyNeuzz
                     DeleteComment(commentId);
                     break;
                 case "Edit":
-                    // Implement edit functionality
+                    // Implement edit functionality if needed
                     break;
             }
 
@@ -161,19 +184,12 @@ namespace DailyNeuzz
             }
         }
 
-        protected bool IsCommentAuthor(object commentUserId)
+        protected string GetUserAvatar(object userId)
         {
-            if (!User.Identity.IsAuthenticated) return false;
-            int currentUserId = GetCurrentUserId();
-            return currentUserId == Convert.ToInt32(commentUserId);
+            // Implement this method to return the user's avatar URL
+            return ResolveUrl("~/images/default-avatar.png");
         }
 
-        private int GetCurrentUserId()
-        {
-            // Implement this method to return the current user's ID
-            // This will depend on how you're handling authentication in your application
-            throw new NotImplementedException();
-        }
         protected string GetTimeAgo(object dateObj)
         {
             DateTime commentDate = Convert.ToDateTime(dateObj);
@@ -200,11 +216,16 @@ namespace DailyNeuzz
             }
         }
 
-        protected string GetUserAvatar(object userId)
+        private int GetCurrentUserId()
         {
-            // Implement this method to return the user's avatar URL
-            // You might want to store avatar URLs in your database
-            return ResolveUrl("~/images/default-avatar.png");
+            // Implement this method to return the current user's ID based on your authentication system
+            return 1; // Replace with actual implementation
+        }
+
+        protected string FormatDate(object date)
+        {
+            if (date == null) return string.Empty;
+            return Convert.ToDateTime(date).ToString("dd MMM yyyy");
         }
     }
 }

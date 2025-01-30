@@ -78,24 +78,6 @@ namespace DailyNeuzz
         protected global::System.Web.UI.WebControls.Literal ltlContent;
 
         /// <summary>
-        /// ltlUsername control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlUsername;
-
-        /// <summary>
-        /// pnlAddComment control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlAddComment;
-
-        /// <summary>
         /// txtComment control.
         /// </summary>
         /// <remarks>
@@ -105,13 +87,13 @@ namespace DailyNeuzz
         protected global::System.Web.UI.WebControls.TextBox txtComment;
 
         /// <summary>
-        /// btnAddComment control.
+        /// btnSubmit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddComment;
+        protected global::System.Web.UI.WebControls.Button btnSubmit;
 
         /// <summary>
         /// rptComments control.
@@ -121,5 +103,14 @@ namespace DailyNeuzz
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptComments;
+
+        /// <summary>
+        /// rptRecentArticles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptRecentArticles;
     }
 }

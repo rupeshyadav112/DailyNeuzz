@@ -20,8 +20,8 @@ namespace DailyNeuzz
             // यूजर ऑथेंटिकेशन चेक करें
             if (!User.Identity.IsAuthenticated)
             {
-                //Response.Redirect("~/Profile.aspx"); // लॉगिन पेज पर रीडायरेक्ट
-                //return;
+                Response.Redirect("~/SignIn.aspx"); // सही कोड
+                return;
             }
 
             if (!IsPostBack)
@@ -100,13 +100,14 @@ namespace DailyNeuzz
                         cmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim());
                         cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
 
-                        // पासवर्ड अपडेट (ऑप्शनल)
+                        // पासवर्ड अपडेट करते समय NULL हैंडलिंग
                         if (!string.IsNullOrEmpty(txtPassword.Text))
                         {
                             cmd.Parameters.AddWithValue("@Password", HashPassword(txtPassword.Text));
                         }
                         else
                         {
+                            // DBNull.Value का उपयोग करें
                             cmd.Parameters.AddWithValue("@Password", DBNull.Value);
                         }
 

@@ -499,7 +499,7 @@
                 <h2 class="article-title"><%# Eval("Title") %></h2>
                 <p class="article-category"><%# Eval("Category") %></p>
                 <p class="article-date"><%# Convert.ToDateTime(Eval("CreatedAt")).ToString("dd MMM yyyy") %></p>
-                <a href='<%# $"ReadArticle.aspx?id={Eval("PostID")}" %>' class="read-article">Read Full Article</a>
+                <a href='<%# $"ReadArticles.aspx?id={Eval("PostID")}" %>' class="read-article">Read Full Article</a>
             </div>
         </article>
     </ItemTemplate>

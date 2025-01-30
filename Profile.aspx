@@ -432,7 +432,8 @@
                         <h2>Update Your Profile</h2>
 
                         <!-- सफलता/त्रुटि संदेश -->
-                        <div id="messagePanel" runat="server" class="message-panel">
+                       <!-- message-panel की डिफ़ॉल्ट CSS में display: none है -->
+<div id="messagePanel" runat="server" class="message-panel" style="display: none;">
                             <asp:Label ID="lblMessage" runat="server"></asp:Label>
                         </div>
                         
@@ -494,6 +495,7 @@
 
         <!-- इमेज प्रीव्यू स्क्रिप्ट -->
         <script type="text/javascript">
+
             function handleFileSelect(fileUpload) {
                 if (fileUpload.files && fileUpload.files[0]) {
                     var reader = new FileReader();
@@ -513,6 +515,12 @@
                     reader.readAsDataURL(fileUpload.files[0]);
                 }
             }
+            // ShowMessage() में स्क्रिप्ट अपडेट करें
+            ClientScript.RegisterStartupScript(GetType(), "showMessage",
+                @"document.getElementById('messagePanel').style.display = 'block';
+    setTimeout(function () {
+                    document.getElementById('messagePanel').style.display = 'none';
+                }, 3000); ", true);
         </script>
     </form>
 </body>

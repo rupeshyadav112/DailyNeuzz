@@ -1,5 +1,4 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ReadArticles.aspx.cs" Inherits="DailyNeuzz.ReadArticles" %>
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -18,22 +17,45 @@
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        .article-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+        }
+        .article-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .article-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
         .news-section {
             background-color: #fff;
             border: 1px solid #e1e4e8;
             border-radius: 8px;
             padding: 20px;
-            margin: 20px 0;
+            margin: 20px auto;
+            max-width: 900px;
         }
         .news-section h2 {
-            font-size: 24px;
+            font-size: 1.5rem;
             text-align: center;
             margin-bottom: 10px;
+            color: #333;
         }
         .news-section p {
             text-align: center;
             color: #666;
             margin-bottom: 15px;
+            font-size: 0.9rem;
         }
         .news-section .btn-update {
             background-color: #1a73e8;
@@ -43,47 +65,83 @@
             border-radius: 5px;
             border: none;
             font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .news-section .btn-update:hover {
+            background-color: #1557b0;
+        }
+        .news-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        .news-image-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
         }
         .news-image {
-            max-width: 300px;
-            float: right;
+            max-width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: contain;
         }
+        
+        /* Comment Section Styles */
         .comment-section {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            border: 1px solid #e1e4e8;
+            margin-top: 30px;
         }
-        .signed-in-as {
+        .signed-in-section {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
         }
-        .user-avatar {
-            width: 24px;
-            height: 24px;
+        .user-icon {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            margin-right: 8px;
+            background-color: #e1e4e8;
         }
-        .comment-box {
+        .comment-container {
             border: 1px solid #e1e4e8;
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 20px;
+            margin-bottom: 24px;
+            background-color: #fff;
         }
         .comment-input {
             width: 100%;
             min-height: 100px;
             border: 1px solid #e1e4e8;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
             resize: none;
+            font-size: 14px;
+        }
+        .comment-input:focus {
+            outline: none;
+            border-color: #0366d6;
+        }
+        .comment-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
         }
         .char-count {
             color: #666;
             font-size: 14px;
-            margin-bottom: 10px;
         }
         .submit-btn {
             background-color: #24292e;
@@ -91,124 +149,327 @@
             padding: 8px 16px;
             border-radius: 6px;
             border: none;
-            float: right;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #000;
+        }
+        .comments-heading {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #24292e;
+        }
+        .comment-list {
+            margin-top: 20px;
         }
         .comment-item {
             display: flex;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e1e4e8;
         }
         .comment-content {
-            margin-left: 12px;
             flex: 1;
         }
         .comment-header {
             display: flex;
             align-items: center;
+            gap: 8px;
             margin-bottom: 4px;
         }
         .comment-username {
+            color: #24292e;
             font-weight: 600;
-            margin-right: 8px;
+            font-size: 14px;
         }
         .comment-time {
             color: #666;
             font-size: 14px;
         }
+        .comment-text {
+            margin: 8px 0;
+            font-size: 14px;
+            color: #24292e;
+        }
         .like-button {
+            display: flex;
+            align-items: center;
+            gap: 4px;
             color: #666;
             background: none;
             border: none;
             padding: 4px 8px;
-            margin-top: 8px;
+            font-size: 14px;
             cursor: pointer;
+            margin-top: 4px;
+        }
+        .like-button:hover {
+            color: #0366d6;
+        }
+        .like-count {
+            color: #666;
+        }
+
+        /* Recent Articles Updated Styles */
+        .recent-articles {
+            padding: 40px 0;
+            background-color: #fff;
+        }
+
+        .recent-articles h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .article-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .article-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .article-info {
+            padding: 20px;
+        }
+
+        .article-info h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .article-category {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .article-date {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .read-more {
+            display: block;
+            background-color: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .read-more:hover {
+            background-color: #1a202c;
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .article-card {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+        /* Recent Published Articles Styles */
+        .recent-articles {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border: 1px solid #e1e4e8;
+        }
+        .recent-articles h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #24292e;
+        }
+        .article-card {
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.2s ease;
+        }
+        .article-card:hover {
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .article-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .article-card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .article-card .meta {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .news-section {
+                padding: 15px;
+            }
+            .news-section h2 {
+                font-size: 1.2rem;
+            }
+            .news-image-container {
+                padding: 10px;
+            }
+            .news-image {
+                max-height: 150px;
+            }
+            .comment-container {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
-    <form id="form1" runat="server">
+     <form id="form1" runat="server">
         <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
         
         <div class="container-fluid p-0">
             <div class="article-container">
                 <div class="container">
-                    <h1 class="article-title mb-3"><asp:Literal ID="ltlTitle" runat="server"></asp:Literal></h1>
+                    <h1 class="article-title"><asp:Literal ID="ltlTitle" runat="server"></asp:Literal></h1>
                     
-                    <asp:Image ID="imgArticle" runat="server" CssClass="article-image mb-4" />
+                    <asp:Image ID="imgArticle" runat="server" CssClass="article-image" />
                     
-                    <div class="article-meta mb-4">
+                    <div class="article-meta">
                         <i class="far fa-calendar-alt"></i> <asp:Literal ID="ltlCreatedAt" runat="server"></asp:Literal>
                         &nbsp;&nbsp;
                         <i class="far fa-folder"></i> <asp:Literal ID="ltlCategory" runat="server"></asp:Literal>
                     </div>
                     
-                    <div class="article-content mb-5">
+                    <div class="article-content">
                         <asp:Literal ID="ltlContent" runat="server"></asp:Literal>
                     </div>
 
                     <!-- News Section -->
                     <div class="news-section">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h2>Want to know more about today'sTOP 10 news?</h2>
-                                <p>Checkout these top news articles</p>
-                                <button type="button" class="btn-update">Stay Updated with Daily News: Your Go-To Resources</button>
-                            </div>
-                            <div class="col-md-4">
-                                <img src="<%= ResolveUrl("~/images/news-illustration.png") %>" alt="News Illustration" class="news-image" />
-                            </div>
-                        </div>
+                        <!-- Your existing news section content -->
                     </div>
 
                     <!-- Comments Section -->
-                    <div class="comment-section mt-4">
-                        <div class="signed-in-as">
+                    <div class="comment-section">
+                        <div class="signed-in-section">
                             <span>Signed in as:</span>
-                            <img src="<%= ResolveUrl("~/images/avatar.png") %>" alt="" class="user-avatar" />
-                            <asp:Literal ID="ltlUsername" runat="server"></asp:Literal>
+                            <i class="fas fa-user user-icon"></i>
+                            <span>@rupesh yadav</span>
                         </div>
 
-                        <asp:Panel ID="pnlAddComment" runat="server">
-                            <div class="comment-box">
-                                <asp:TextBox ID="txtComment" runat="server" TextMode="MultiLine" 
-                                    CssClass="comment-input" placeholder="Add a comment"
-                                    onkeyup="updateCharCount(this)"></asp:TextBox>
-                                <div class="char-count">
+                        <div class="comment-container">
+                            <asp:TextBox ID="txtComment" runat="server" 
+                                TextMode="MultiLine" 
+                                CssClass="comment-input" 
+                                placeholder="Add a comment"
+                                onkeyup="updateCharCount(this)">
+                            </asp:TextBox>
+                            <div class="comment-footer">
+                                <span class="char-count">
                                     <span id="charCount">200</span> characters remaining
-                                </div>
-                                <asp:Button ID="btnAddComment" runat="server" Text="Submit" 
-                                    CssClass="submit-btn" OnClick="btnAddComment_Click" />
-                                <div class="clearfix"></div>
+                                </span>
+                                <asp:Button ID="btnSubmit" runat="server" 
+                                    Text="Submit" 
+                                    CssClass="submit-btn"
+                                    OnClick="btnAddComment_Click" />
                             </div>
-                        </asp:Panel>
+                        </div>
 
-                        <h3 class="mb-4">Comments</h3>
-                        <asp:Repeater ID="rptComments" runat="server" OnItemCommand="rptComments_ItemCommand">
-                            <ItemTemplate>
-                                <div class="comment-item">
-                                    <img src='<%# GetUserAvatar(Eval("UserID")) %>' alt="" class="user-avatar" />
-                                    <div class="comment-content">
-                                        <div class="comment-header">
-                                            <span class="comment-username">@<%# Eval("UserName") %></span>
-                                            <span class="comment-time"><%# GetTimeAgo(Eval("CreatedAt")) %></span>
+                        <div class="comment-list">
+                            <h3 class="comments-heading">Comments</h3>
+
+                            <asp:Repeater ID="rptComments" runat="server" OnItemCommand="rptComments_ItemCommand">
+                                <ItemTemplate>
+                                    <div class="comment-item">
+                                        <img src='<%# GetUserAvatar(Eval("UserID")) %>' 
+                                             alt="" 
+                                             class="comment-avatar" />
+                                        <div class="comment-content">
+                                            <div class="comment-header">
+                                                <span class="comment-username">@<%# Eval("UserName") %></span>
+                                                <span class="comment-time"><%# GetTimeAgo(Eval("CreatedAt")) %></span>
+                                            </div>
+                                            <p class="comment-text"><%# Eval("CommentText") %></p>
+                                            <button type="button" class="like-button">
+                                                <i class="far fa-thumbs-up"></i>
+                                                <span class="like-count">1 like</span>
+                                            </button>
                                         </div>
-                                        <p><%# Eval("CommentText") %></p>
-                                        <button type="button" class="like-button">
-                                            <i class="far fa-thumbs-up"></i> Like
-                                        </button>
-                                        
-                                        <asp:Panel ID="pnlEdit" runat="server" Visible='<%# IsCommentAuthor(Eval("UserID")) %>'>
-                                            <asp:LinkButton ID="lnkEdit" runat="server" Text="Edit" 
-                                                CommandName="Edit" CommandArgument='<%# Eval("CommentID") %>'
-                                                CssClass="btn btn-sm btn-link" />
-                                            <asp:LinkButton ID="lnkDelete" runat="server" Text="Delete" 
-                                                CommandName="Delete" CommandArgument='<%# Eval("CommentID") %>'
-                                                CssClass="btn btn-sm btn-link text-danger" 
-                                                OnClientClick="return confirm('Are you sure you want to delete this comment?');" />
-                                        </asp:Panel>
                                     </div>
-                                </div>
-                            </ItemTemplate>
-                        </asp:Repeater>
+                                </ItemTemplate>
+                            </asp:Repeater>
+                        </div>
+                    </div>
+
+                    <!-- Recent Published Articles Section -->
+                    <div class="recent-articles">
+                        <h3>Recent Published Articles</h3>
+                        <div class="articles-grid">
+                            <asp:Repeater ID="rptRecentArticles" runat="server">
+                                <ItemTemplate>
+                                    <div class="article-card">
+                                        <div class="article-image">
+                                        <img src='<%# ResolveUrl(Eval("ImagePath").ToString()) %>' alt='<%# Eval("Title") %>' />                                        </div>
+                                        <div class="article-info">
+                                            <h4><%# Eval("Title") %></h4>
+                                            <div class="article-category"><%# Eval("Category") %></div>
+                                            <div class="article-date"><%# FormatDate(Eval("CreatedAt")) %></div>
+                                            <a href='ReadArticles.aspx?id=<%# Eval("PostID") %>' class="read-more">Read Full Article</a>
+                                        </div>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -220,6 +481,12 @@
             var maxLength = 200;
             var currentLength = textarea.value.length;
             var remaining = maxLength - currentLength;
+
+            if (currentLength > maxLength) {
+                textarea.value = textarea.value.substring(0, maxLength);
+                remaining = 0;
+            }
+
             document.getElementById('charCount').innerHTML = remaining;
         }
     </script>
