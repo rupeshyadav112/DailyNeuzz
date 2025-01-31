@@ -194,7 +194,7 @@
         .login-btn {
             display: inline-block;
             padding: 0.5rem 1rem;
-            background-color: rgb(79, 70, 229);
+            background-color:#000;
             color: white;
             text-decoration: none;
             border-radius: 0.375rem;
@@ -332,6 +332,7 @@
     text-decoration: none;
     border-radius: 6px;
     transition: background-color 0.2s ease;
+    margin-top:0.6rem;
 }
 
 .read-article:hover {
@@ -404,51 +405,57 @@
     <form id="form1" runat="server">
         <asp:ScriptManager runat="server" />
         
-        <!-- Header -->
-        <header>
-            <div class="header-content">
-                <div class="header-left">
-                    <a href="Home.aspx" class="header-logo">DailyNeuzz</a>
-                </div>
+       <!-- Header -->
+<header>
+    <div class="header-content">
+        <div class="header-left">
+            <a href="Home.aspx" class="header-logo">DailyNeuzz</a>
+        </div>
 
-                <div class="header-center">
-                    <div class="search-box">
-                        <input type="text" class="search-input" placeholder="Search..." />
-                        <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </div>
-                </div>
-                
-                <div class="header-right">
-                    <nav class="nav-links">
-                        <a href="Home.aspx" class="nav-link">Home</a>
-                        <a href="About.aspx" class="nav-link">About</a>
-                        <a href="NewsArticles.aspx" class="nav-link active">News Articles</a>
-                    </nav>
+        <div class="header-center">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search..." />
+                <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <nav class="nav-links">
+                <a href="Home.aspx" class="nav-link">Home</a>
+                <a href="About.aspx" class="nav-link">About</a>
+                <a href="NewsArticles.aspx" class="nav-link">News Articles</a>
+            </nav>
 
-                    <div class="profile-dropdown">
-                        <a href="Profile.aspx" class="profile-icon">
-                            <asp:Image ID="headerProfileImg" runat="server" Visible="false" />
-                            <div class="profile-placeholder">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="headerProfilePlaceholder" runat="server">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                            </div>
-                        </a>
-                        <div class="dropdown-menu">
-                            <div class="user-info">
-                                <asp:Label ID="headerUsername" runat="server" Text="Username"></asp:Label>
-                            </div>
-                            <a href="Profile.aspx" class="dropdown-item">Profile</a>
-                            <a href="Logout.aspx" class="dropdown-item">Logout</a>
+            <% if (Session["UserEmail"] == null) { %>
+                <!-- User is not logged in -->
+                <a href="SignIn.aspx" class="login-btn">Login</a>
+            <% } else { %>
+                <!-- User is logged in -->
+                <div class="profile-dropdown">
+                    <div class="profile-icon">
+                        <asp:Image ID="imgProfile" runat="server" CssClass="profile-image" Visible="false" />
+                        <div id="headerProfilePlaceholder" runat="server" class="profile-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
                         </div>
                     </div>
+                    <div class="dropdown-menu">
+                        <div class="user-info">
+                            <asp:Literal ID="litUserEmail" runat="server"></asp:Literal>
+                        </div>
+                        <a href="Profile.aspx" class="dropdown-item">Profile</a>
+                        <asp:LinkButton ID="lnkLogout" runat="server" OnClick="Logout_Click" CssClass="dropdown-item">Logout</asp:LinkButton>
+                    </div>
                 </div>
-            </div>
-        </header>
+            <% } %>
+        </div>
+    </div>
+</header>
 
         <main class="main-container">
            <aside class="filters">

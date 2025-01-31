@@ -194,7 +194,7 @@
         .login-btn {
             display: inline-block;
             padding: 0.5rem 1rem;
-            background-color: rgb(79, 70, 229);
+            background-color: #000;
             color: white;
             text-decoration: none;
             border-radius: 0.375rem;

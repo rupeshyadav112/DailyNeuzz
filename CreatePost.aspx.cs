@@ -13,6 +13,16 @@ public partial class CreatePost : Page
         if (!IsPostBack)
         {
             LoadCategories();
+
+            if (Session["UserEmail"] != null)
+            {
+                litUserEmail.Text = Session["UserEmail"].ToString();
+                // ProfileImagePath से इमेज URL लें
+                string profileImagePath = Session["UserProfileImage"]?.ToString();
+                imgProfile.ImageUrl = ResolveUrl(!string.IsNullOrEmpty(profileImagePath)
+                                                 ? profileImagePath
+                                                 : "image/Avatar.png");
+            }
         }
 
         // Add OnClick event handler for the Publish button
@@ -104,6 +114,12 @@ public partial class CreatePost : Page
         {
             throw new Exception("Error uploading file. Please try again.");
         }
+    }
+    protected void Logout_Click(object sender, EventArgs e)
+    {
+        Session.Clear();
+        Session.Abandon();
+        Response.Redirect("~/Home.aspx");
     }
 
     private void SaveToDatabase(string title, string content, string category, string imagePath, string fontStyle)

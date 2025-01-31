@@ -13,6 +13,15 @@ namespace DailyNeuzz
             if (!IsPostBack)
             {
                 LoadAllPosts();
+                if (Session["UserEmail"] != null)
+                {
+                    litUserEmail.Text = Session["UserEmail"].ToString();
+                    // ProfileImagePath से इमेज URL लें
+                    string profileImagePath = Session["UserProfileImage"]?.ToString();
+                    imgProfile.ImageUrl = ResolveUrl(!string.IsNullOrEmpty(profileImagePath)
+                                                     ? profileImagePath
+                                                     : "image/Avatar.png");
+                }
             }
         }
 
@@ -36,7 +45,12 @@ namespace DailyNeuzz
                 }
             }
         }
-
+        protected void Logout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session.Abandon();
+            Response.Redirect("~/Home.aspx");
+        }
         protected void btnApplyFilters_Click(object sender, EventArgs e)
         {
             string searchTerm = txtSearchTerm.Text.Trim();

@@ -33,6 +33,15 @@ namespace DailyNeuzz
         protected global::System.Web.UI.WebControls.Image imgProfile;
 
         /// <summary>
+        /// headerProfilePlaceholder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl headerProfilePlaceholder;
+
+        /// <summary>
         /// litUserEmail control.
         /// </summary>
         /// <remarks>

@@ -31,6 +31,12 @@ namespace DailyNeuzz
                 return Convert.ToBase64String(hashedBytes);
             }
         }
+        protected void Logout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session.Abandon();
+            Response.Redirect("~/SignIn.aspx");
+        }
 
         protected void btnSignUp_Click(object sender, EventArgs e)
         {
@@ -81,7 +87,7 @@ namespace DailyNeuzz
                     }
 
                     ShowSuccess("Registration successful! Redirecting to login...");
-                    Response.AddHeader("REFRESH", "3;URL=SignIn.aspx");
+                    Response.Redirect("SignIn.aspx");
                 }
                 catch (Exception ex)
                 {

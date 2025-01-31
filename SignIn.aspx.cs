@@ -26,6 +26,12 @@ namespace DailyNeuzz
                 return Convert.ToBase64String(hashedBytes);
             }
         }
+        protected void Logout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session.Abandon();
+            Response.Redirect("~/SignIn.aspx");
+        }
 
         protected void btnSignIn_Click(object sender, EventArgs e)
         {

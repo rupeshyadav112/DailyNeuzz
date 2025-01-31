@@ -24,13 +24,13 @@ namespace DailyNeuzz
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// headerProfileImg control.
+        /// imgProfile control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image headerProfileImg;
+        protected global::System.Web.UI.WebControls.Image imgProfile;
 
         /// <summary>
         /// headerProfilePlaceholder control.
@@ -42,13 +42,22 @@ namespace DailyNeuzz
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl headerProfilePlaceholder;
 
         /// <summary>
-        /// headerUsername control.
+        /// litUserEmail control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label headerUsername;
+        protected global::System.Web.UI.WebControls.Literal litUserEmail;
+
+        /// <summary>
+        /// lnkLogout control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lnkLogout;
 
         /// <summary>
         /// txtSearchTerm control.

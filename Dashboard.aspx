@@ -28,10 +28,10 @@
 body {
     background-color: #f5f5f5;
 }
-/* Header Styles */
+/* Header styles */
 header {
-    background-color: var(--background-color);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     position: fixed;
     top: 0;
     left: 0;
@@ -40,130 +40,178 @@ header {
 }
 
 .header-content {
-    display: flex;
-    justify-content: space-between;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: auto auto auto;
     align-items: center;
-    height: var(--header-height);
-    position: relative;
+    gap: 2rem;
 }
 
-#profile-section {
-    position: relative;
-    margin-left: 20px;
-}
-
-.profile-dropdown {
-    position: relative;
-    cursor: pointer;
+.header-left {
     display: flex;
     align-items: center;
 }
 
-.profile-image {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+.header-center {
+    display: flex;
+    justify-content: center;
+    flex: 1;
 }
 
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: var(--background-color);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    padding: 10px;
-    min-width: 200px;
-    z-index: 1000;
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    justify-content: flex-end;
 }
 
-.logo {
+.header-logo {
     font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--secondary-color);
+    font-weight: 600;
+    color: rgb(31, 41, 55);
     text-decoration: none;
 }
 
-/* Search Bar Styles */
-.search-bar {
+.nav-links {
     display: flex;
     align-items: center;
-    background-color: #f1f3f4;
-    border-radius: 24px;
-    padding: 6px 12px;
-    margin: 0 20px;
-    flex-grow: 1;
-    max-width: 300px;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: rgb(75, 85, 99);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: rgb(31, 41, 55);
+}
+
+.nav-link.active {
+    color: rgb(31, 41, 55);
+    font-weight: 600;
+}
+
+/* Search box styles */
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(229, 231, 235);
+    background-color: rgb(249, 250, 251);
 }
 
 .search-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    color: #5f6368;
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgb(156, 163, 175);
 }
 
-.search-bar input {
-    border: none;
-    background: transparent;
-    font-size: 1rem;
-    width: 100%;
-    outline: none;
+/* Profile dropdown styles */
+.profile-dropdown {
+    position: relative;
 }
 
-/* Navigation Styles */
-nav ul {
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: rgb(243, 244, 246);
     display: flex;
-    list-style-type: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid rgb(229, 231, 235);
 }
 
-    nav ul li {
-        margin-left: 20px;
-    }
-
-        nav ul li a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-            nav ul li a:hover {
-                color: var(--primary-color);
-            }
-
-/* Login Button Styles */
-.login-btn {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-    .login-btn:hover {
-        background-color: #2980b9;
-    }
+.profile-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-/* Profile Dropdown Styles */
+.profile-placeholder svg {
+    width: 24px;
+    height: 24px;
+    color: rgb(156, 163, 175);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 240px;
+    background-color: white;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s;
+}
 
 .profile-dropdown:hover .dropdown-menu {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
-.dropdown-menu a {
+.user-info {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgb(229, 231, 235);
+    color: rgb(55, 65, 81);
+    font-size: 0.875rem;
+}
+
+.dropdown-item {
     display: block;
-    padding: 5px 0;
-    color: var(--secondary-color);
+    padding: 0.75rem 1rem;
+    color: rgb(55, 65, 81);
     text-decoration: none;
+    transition: background-color 0.2s;
 }
 
-    .dropdown-menu a:hover {
-        color: var(--primary-color);
-    }
+.dropdown-item:hover {
+    background-color: rgb(243, 244, 246);
+}
+
+.login-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #000;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+    background-color: rgb(67, 56, 202);
+}
 
 /* Sidebar Styles */
 .sidebar {
@@ -289,44 +337,57 @@ nav ul {
 </head>
 <body>
        <form id="form1" runat="server">
-     <header>
-    <div class="container">
-        <div class="header-content">
-            <a href="/" class="logo">DailyNeuzz</a>
+      <!-- Header -->
+ <header>
+     <div class="header-content">
+         <div class="header-left">
+             <a href="Home.aspx" class="header-logo">DailyNeuzz</a>
+         </div>
 
-            <div class="search-bar">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input type="text" placeholder="Search..." />
-            </div>
+         <div class="header-center">
+             <div class="search-box">
+                 <input type="text" class="search-input" placeholder="Search..." />
+                 <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                     <circle cx="11" cy="11" r="8"></circle>
+                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                 </svg>
+             </div>
+         </div>
+         
+         <div class="header-right">
+             <nav class="nav-links">
+                 <a href="Home.aspx" class="nav-link">Home</a>
+                 <a href="About.aspx" class="nav-link">About</a>
+                 <a href="NewsArticles.aspx" class="nav-link">News Articles</a>
+             </nav>
 
-            <nav>
-                <ul>
-                    <li><a href="Home.aspx">Home</a></li>
-                    <li><a href="About.aspx">About</a></li>
-                    <li><a href="NewsArticles.aspx">News Articles</a></li>
-                    <li id="profile-section">
-                        <% if (Session["UserEmail"] == null) { %>
-                            <!-- User is not logged in -->
-                            <a href="SignIn.aspx" class="login-btn">Login</a>
-                        <% } else { %>
-                            <!-- User is logged in -->
-                            <div class="profile-dropdown">
-                                <asp:Image ID="imgProfile" runat="server" CssClass="profile-image" />
-                                <div class="dropdown-menu">
-                                    <asp:Literal ID="litUserEmail" runat="server"></asp:Literal>
-                                    <a href="Profile.aspx">Profile</a>
-                                    <asp:LinkButton ID="LinkButton1" runat="server" OnClick="Logout_Click">Logout</asp:LinkButton>
-                                </div>
-                            </div>
-                        <% } %>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</header>
+             <% if (Session["UserEmail"] == null) { %>
+                 <!-- User is not logged in -->
+                 <a href="SignIn.aspx" class="login-btn">Login</a>
+             <% } else { %>
+                 <!-- User is logged in -->
+                 <div class="profile-dropdown">
+                     <div class="profile-icon">
+                         <asp:Image ID="imgProfile" runat="server" CssClass="profile-image" Visible="false" />
+                         <div id="headerProfilePlaceholder" runat="server" class="profile-placeholder">
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                 <circle cx="12" cy="7" r="4"></circle>
+                             </svg>
+                         </div>
+                     </div>
+                     <div class="dropdown-menu">
+                         <div class="user-info">
+                             <asp:Literal ID="litUserEmail" runat="server"></asp:Literal>
+                         </div>
+                         <a href="Profile.aspx" class="dropdown-item">Profile</a>
+                         <asp:LinkButton ID="LinkButton1" runat="server" OnClick="Logout_Click" CssClass="dropdown-item">Logout</asp:LinkButton>
+                     </div>
+                 </div>
+             <% } %>
+         </div>
+     </div>
+ </header>
 
         <div class="sidebar">
             <ul class="sidebar-menu">

@@ -20,13 +20,23 @@ namespace DailyNeuzz
             // यूजर ऑथेंटिकेशन चेक करें
             if (!User.Identity.IsAuthenticated)
             {
-                Response.Redirect("~/SignIn.aspx"); // सही कोड
-                return;
+                //Response.Redirect("~/SignIn.aspx");
+                //return;
             }
 
             if (!IsPostBack)
             {
-                LoadUserProfile(); // प्रोफाइल डेटा लोड करें
+                LoadUserProfile();
+                // Check if user is logged in
+                if (Session["UserEmail"] != null)
+                {
+                    litUserEmail.Text = Session["UserEmail"].ToString();
+                    // ProfileImagePath से इमेज URL लें
+                    string profileImagePath = Session["UserProfileImage"]?.ToString();
+                    imgProfile.ImageUrl = ResolveUrl(!string.IsNullOrEmpty(profileImagePath)
+                                                     ? profileImagePath
+                                                     : "image/Avatar.png");
+                }
             }
         }
 
@@ -35,7 +45,6 @@ namespace DailyNeuzz
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                // डेटाबेस से प्रोफाइल डेटा फ़ेच करें
                 string query = @"SELECT FullName, Email, ProfileImagePath 
                                FROM Users 
                                WHERE Username = @Username";
@@ -61,8 +70,8 @@ namespace DailyNeuzz
                                 profilePlaceholder.Visible = false;
 
                                 // हेडर इमेज अपडेट करें
-                                headerProfileImg.ImageUrl = ResolveUrl(imagePath);
-                                headerProfileImg.Visible = true;
+                                //headerProfileImg.ImageUrl = ResolveUrl(imagePath);
+                                //headerProfileImg.Visible = true;
                                 headerProfilePlaceholder.Visible = false;
                             }
                         }
@@ -71,7 +80,7 @@ namespace DailyNeuzz
             }
         }
 
-        // पासवर्ड हैशिंग मेथड
+        // पासवर्ड हैशिंग
         private string HashPassword(string password)
         {
             using (SHA256 sha256 = SHA256.Create())
@@ -81,7 +90,7 @@ namespace DailyNeuzz
             }
         }
 
-        // प्रोफाइल अपडेट बटन
+        // प्रोफाइल अपडेट
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
             if (ValidateProfile())
@@ -100,22 +109,28 @@ namespace DailyNeuzz
                         cmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim());
                         cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
 
-                        // पासवर्ड अपडेट करते समय NULL हैंडलिंग
+                        // पासवर्ड अपडेट (ऑप्शनल)
                         if (!string.IsNullOrEmpty(txtPassword.Text))
                         {
                             cmd.Parameters.AddWithValue("@Password", HashPassword(txtPassword.Text));
                         }
                         else
                         {
-                            // DBNull.Value का उपयोग करें
                             cmd.Parameters.AddWithValue("@Password", DBNull.Value);
                         }
 
                         try
                         {
                             conn.Open();
-                            cmd.ExecuteNonQuery();
-                            ShowMessage("Profile updated successfully!", true);
+                            int rowsAffected = cmd.ExecuteNonQuery();
+                            if (rowsAffected > 0)
+                            {
+                                ShowMessage("Profile updated successfully!", true);
+                            }
+                            else
+                            {
+                                ShowMessage("No changes were made.", false);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -126,21 +141,38 @@ namespace DailyNeuzz
             }
         }
 
-        // प्रोफाइल इमेज अपलोड
+        // इमेज अपलोड
         protected void btnUpload_Click(object sender, EventArgs e)
         {
             if (fileUpload.HasFile)
             {
                 try
                 {
-                    // फ़ाइल नाम और पाथ जेनरेट करें
-                    string fileName = Guid.NewGuid() + Path.GetExtension(fileUpload.FileName);
+                    // फ़ाइल साइज़ चेक (max 5MB)
+                    if (fileUpload.PostedFile.ContentLength > 5 * 1024 * 1024)
+                    {
+                        ShowMessage("File size must be less than 5MB", false);
+                        return;
+                    }
+
+                    // एक्सटेंशन चेक
+                    string ext = Path.GetExtension(fileUpload.FileName).ToLower();
+                    if (ext != ".jpg" && ext != ".png" && ext != ".jpeg")
+                    {
+                        ShowMessage("Only JPG/PNG files allowed", false);
+                        return;
+                    }
+
+                    // अपलोड डायरेक्टरी
                     string uploadDir = Server.MapPath("~/Uploads/ProfileImages/");
-                    Directory.CreateDirectory(uploadDir); // डायरेक्टरी बनाएँ
+                    Directory.CreateDirectory(uploadDir);
+
+                    // फ़ाइल सेव करें
+                    string fileName = Guid.NewGuid() + ext;
                     string filePath = Path.Combine(uploadDir, fileName);
                     fileUpload.SaveAs(filePath);
 
-                    // डेटाबेस में पाथ अपडेट करें
+                    // डेटाबेस अपडेट
                     string relativePath = "~/Uploads/ProfileImages/" + fileName;
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
@@ -154,14 +186,12 @@ namespace DailyNeuzz
                         }
                     }
 
-                    // UI अपडेट करें
+                    // UI अपडेट
                     imgProfile.ImageUrl = ResolveUrl(relativePath);
                     imgProfile.Visible = true;
                     profilePlaceholder.Visible = false;
-
-                    // हेडर इमेज अपडेट
-                    headerProfileImg.ImageUrl = ResolveUrl(relativePath);
-                    headerProfileImg.Visible = true;
+                    //headerProfileImg.ImageUrl = ResolveUrl(relativePath);
+                    //headerProfileImg.Visible = true;
                     headerProfilePlaceholder.Visible = false;
 
                     ShowMessage("Profile image updated!", true);
@@ -170,6 +200,10 @@ namespace DailyNeuzz
                 {
                     ShowMessage("Error uploading image: " + ex.Message, false);
                 }
+            }
+            else
+            {
+                ShowMessage("Please select a file to upload.", false);
             }
         }
 
@@ -196,18 +230,28 @@ namespace DailyNeuzz
         {
             lblMessage.Text = message;
             messagePanel.Attributes["class"] = $"message-panel {(isSuccess ? "success-message" : "error-message")}";
-            ClientScript.RegisterStartupScript(GetType(), "showMessage", "setTimeout(() => { document.getElementById('messagePanel').style.display = 'none'; }, 3000);", true);
+            ClientScript.RegisterStartupScript(GetType(), "showMessage",
+                @"document.getElementById('messagePanel').style.display = 'block';
+                setTimeout(function() { 
+                    document.getElementById('messagePanel').style.display = 'none'; 
+                }, 3000);", true);
         }
 
-        // लॉगआउट बटन
+        // लॉगआउट
         protected void btnSignOut_Click(object sender, EventArgs e)
         {
             FormsAuthentication.SignOut();
             Session.Clear();
             Response.Redirect("~/SignIn.aspx");
         }
+        protected void Logout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session.Abandon();
+            Response.Redirect("~/Home.aspx");
+        }
 
-        // अकाउंट डिलीट बटन
+        // अकाउंट डिलीट
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -218,7 +262,7 @@ namespace DailyNeuzz
                     cmd.Parameters.AddWithValue("@Username", User.Identity.Name);
                     conn.Open();
                     cmd.ExecuteNonQuery();
-                    btnSignOut_Click(sender, e); // लॉगआउट करें
+                    btnSignOut_Click(sender, e);
                 }
             }
         }

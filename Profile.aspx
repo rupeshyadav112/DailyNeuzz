@@ -22,7 +22,7 @@
         }
 
         /* Header styles */
-        header {
+/*        header {
             background-color: white;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             position: fixed;
@@ -112,7 +112,170 @@
             width: 24px;
             height: 24px;
             color: rgb(156, 163, 175);
-        }
+        }*/
+
+/* Header styles */
+header {
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    gap: 2rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-center {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    justify-content: flex-end;
+}
+
+.header-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgb(31, 41, 55);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: rgb(75, 85, 99);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: rgb(31, 41, 55);
+}
+
+.nav-link.active {
+    color: rgb(31, 41, 55);
+    font-weight: 600;
+}
+
+/* Profile dropdown styles */
+.profile-dropdown {
+    position: relative;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: rgb(243, 244, 246);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid rgb(229, 231, 235);
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-placeholder svg {
+    width: 24px;
+    height: 24px;
+    color: rgb(156, 163, 175);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 240px;
+    background-color: white;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s;
+}
+
+.profile-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-info {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgb(229, 231, 235);
+    color: rgb(55, 65, 81);
+    font-size: 0.875rem;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: rgb(55, 65, 81);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: rgb(243, 244, 246);
+}
+
+.login-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #000;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+    background-color: rgb(67, 56, 202);
+}
+
 
         /* Search box styles */
         .search-box {
@@ -361,46 +524,61 @@
     </style>
 </head>
 <body>
-    <form id="form1" runat="server">
+   <form id="form1" runat="server">
         <asp:ScriptManager runat="server" />
         
-        <!-- हेडर सेक्शन -->
-        <header>
-            <div class="header-content">
-                <!-- लोगो और नेविगेशन लिंक्स -->
-                <div class="header-left">
-                    <a href="Home.aspx" class="header-logo">DailyNeuzz</a>
-                </div>
+        <!-- हेडर -->
+        <!-- Header -->
+ <header>
+     <div class="header-content">
+         <div class="header-left">
+             <a href="Home.aspx" class="header-logo">DailyNeuzz</a>
+         </div>
 
-                <!-- सर्च बॉक्स -->
-                <div class="header-center">
-                    <div class="search-box">
-                        <input type="text" class="search-input" placeholder="Search..." />
-                        <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </div>
-                </div>
-                
-                <!-- प्रोफाइल आइकन -->
-                <div class="header-right">
-                    <nav class="nav-links">
-                        <a href="Home.aspx" class="nav-link">Home</a>
-                        <a href="About.aspx" class="nav-link">About</a>
-                        <a href="NewsArticles.aspx" class="nav-link">News Articles</a>
-                    </nav>
+         <div class="header-center">
+             <div class="search-box">
+                 <input type="text" class="search-input" placeholder="Search..." />
+                 <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                     <circle cx="11" cy="11" r="8"></circle>
+                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                 </svg>
+             </div>
+         </div>
+         
+         <div class="header-right">
+             <nav class="nav-links">
+                 <a href="Home.aspx" class="nav-link">Home</a>
+                 <a href="About.aspx" class="nav-link">About</a>
+                 <a href="NewsArticles.aspx" class="nav-link">News Articles</a>
+             </nav>
 
-                    <a href="Profile.aspx" class="profile-icon">
-                        <asp:Image ID="headerProfileImg" runat="server" Visible="false" />
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="headerProfilePlaceholder" runat="server">
-                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </header>
+             <% if (Session["UserEmail"] == null) { %>
+                 <!-- User is not logged in -->
+                 <a href="SignIn.aspx" class="login-btn">Login</a>
+             <% } else { %>
+                 <!-- User is logged in -->
+                 <div class="profile-dropdown">
+                     <div class="profile-icon">
+                         <asp:Image ID="Image1" runat="server" CssClass="profile-image" Visible="false" />
+                         <div id="headerProfilePlaceholder" runat="server" class="profile-placeholder">
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                 <circle cx="12" cy="7" r="4"></circle>
+                             </svg>
+                         </div>
+                     </div>
+                     <div class="dropdown-menu">
+                         <div class="user-info">
+                             <asp:Literal ID="litUserEmail" runat="server"></asp:Literal>
+                         </div>
+                         <a href="Profile.aspx" class="dropdown-item">Profile</a>
+                         <asp:LinkButton ID="LinkButton1" runat="server" OnClick="Logout_Click" CssClass="dropdown-item">Logout</asp:LinkButton>
+                     </div>
+                 </div>
+             <% } %>
+         </div>
+     </div>
+ </header>
 
         <!-- मुख्य कंटेनर -->
         <div class="main-container">
@@ -431,9 +609,8 @@
                     <div class="profile-container">
                         <h2>Update Your Profile</h2>
 
-                        <!-- सफलता/त्रुटि संदेश -->
-                       <!-- message-panel की डिफ़ॉल्ट CSS में display: none है -->
-<div id="messagePanel" runat="server" class="message-panel" style="display: none;">
+                        <!-- संदेश पैनल -->
+                        <div id="messagePanel" runat="server" class="message-panel" style="display: none;">
                             <asp:Label ID="lblMessage" runat="server"></asp:Label>
                         </div>
                         
@@ -495,32 +672,20 @@
 
         <!-- इमेज प्रीव्यू स्क्रिप्ट -->
         <script type="text/javascript">
-
             function handleFileSelect(fileUpload) {
                 if (fileUpload.files && fileUpload.files[0]) {
                     var reader = new FileReader();
-
                     reader.onload = function (e) {
                         var imgProfile = document.getElementById('<%= imgProfile.ClientID %>');
                         var placeholder = document.getElementById('<%= profilePlaceholder.ClientID %>');
-                        
                         imgProfile.src = e.target.result;
                         imgProfile.style.display = 'block';
                         placeholder.style.display = 'none';
-                        
-                        // अपलोड बटन ऑटो-क्लिक करें
                         document.getElementById('<%= btnUpload.ClientID %>').click();
                     };
-
                     reader.readAsDataURL(fileUpload.files[0]);
                 }
             }
-            // ShowMessage() में स्क्रिप्ट अपडेट करें
-            ClientScript.RegisterStartupScript(GetType(), "showMessage",
-                @"document.getElementById('messagePanel').style.display = 'block';
-    setTimeout(function () {
-                    document.getElementById('messagePanel').style.display = 'none';
-                }, 3000); ", true);
         </script>
     </form>
 </body>

@@ -2,17 +2,202 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Article Details</title>
+    <title>Read Articles</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f8f9fa;
-        }
+     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+     background-color: rgb(249, 250, 251);
+     color: rgb(55, 65, 81);
+     line-height: 1.5;
+     padding-top: 73px;
+ }
+       /* Header styles */
+header {
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    gap: 2rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-center {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    justify-content: flex-end;
+}
+
+.header-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgb(31, 41, 55);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: rgb(75, 85, 99);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: rgb(31, 41, 55);
+}
+
+.nav-link.active {
+    color: rgb(31, 41, 55);
+    font-weight: 600;
+}
+
+/* Search box styles */
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(229, 231, 235);
+    background-color: rgb(249, 250, 251);
+}
+
+.search-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgb(156, 163, 175);
+}
+
+/* Profile dropdown styles */
+.profile-dropdown {
+    position: relative;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: rgb(243, 244, 246);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid rgb(229, 231, 235);
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-placeholder svg {
+    width: 24px;
+    height: 24px;
+    color: rgb(156, 163, 175);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 240px;
+    background-color: white;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s;
+}
+
+.profile-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-info {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgb(229, 231, 235);
+    color: rgb(55, 65, 81);
+    font-size: 0.875rem;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: rgb(55, 65, 81);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: rgb(243, 244, 246);
+}
+
+.login-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #000;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+    background-color: rgb(67, 56, 202);
+}
         .article-container {
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -376,7 +561,57 @@
 <body>
      <form id="form1" runat="server">
         <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+        <!-- Header -->
+<header>
+    <div class="header-content">
+        <div class="header-left">
+            <a href="Home.aspx" class="header-logo">DailyNeuzz</a>
+        </div>
+
+        <div class="header-center">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search..." />
+                <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
+        </div>
         
+        <div class="header-right">
+            <nav class="nav-links">
+                <a href="Home.aspx" class="nav-link">Home</a>
+                <a href="About.aspx" class="nav-link">About</a>
+                <a href="NewsArticles.aspx" class="nav-link">News Articles</a>
+            </nav>
+
+            <% if (Session["UserEmail"] == null) { %>
+                <!-- User is not logged in -->
+                <a href="SignIn.aspx" class="login-btn">Login</a>
+            <% } else { %>
+                <!-- User is logged in -->
+                <div class="profile-dropdown">
+                    <div class="profile-icon">
+                        <asp:Image ID="imgProfile" runat="server" CssClass="profile-image" Visible="false" />
+                        <div id="headerProfilePlaceholder" runat="server" class="profile-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <div class="user-info">
+                            <asp:Literal ID="litUserEmail" runat="server"></asp:Literal>
+                        </div>
+                        <a href="Profile.aspx" class="dropdown-item">Profile</a>
+                        <asp:LinkButton ID="lnkLogout" runat="server" OnClick="Logout_Click" CssClass="dropdown-item">Logout</asp:LinkButton>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</header>
         <div class="container-fluid p-0">
             <div class="article-container">
                 <div class="container">

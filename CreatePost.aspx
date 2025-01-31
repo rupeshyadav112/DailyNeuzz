@@ -6,85 +6,246 @@
     <title>Create Post - DailyNeuzz</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        /* Header styles */
+header {
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    gap: 2rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-center {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    justify-content: flex-end;
+}
+
+.header-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgb(31, 41, 55);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: rgb(75, 85, 99);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: rgb(31, 41, 55);
+}
+
+.nav-link.active {
+    color: rgb(31, 41, 55);
+    font-weight: 600;
+}
+
+/* Search box styles */
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(229, 231, 235);
+    background-color: rgb(249, 250, 251);
+}
+
+.search-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgb(156, 163, 175);
+}
+
+/* Profile dropdown styles */
+.profile-dropdown {
+    position: relative;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: rgb(243, 244, 246);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid rgb(229, 231, 235);
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-placeholder svg {
+    width: 24px;
+    height: 24px;
+    color: rgb(156, 163, 175);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 240px;
+    background-color: white;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s;
+}
+
+.profile-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-info {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgb(229, 231, 235);
+    color: rgb(55, 65, 81);
+    font-size: 0.875rem;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: rgb(55, 65, 81);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: rgb(243, 244, 246);
+}
+
+.login-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #000;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+    background-color: rgb(67, 56, 202);
+}
+    </style>
 </head>
 <body class="bg-gray-50">
     <form id="form1" runat="server">
-        <!-- Fixed Navigation Bar -->
-        <nav class="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <!-- Logo and Brand -->
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 flex items-center">
-                            <span class="text-2xl font-bold text-gray-800">DailyNeuzz</span>
-                        </div>
-                    </div>
+            <!-- Header -->
+<header>
+    <div class="header-content">
+        <div class="header-left">
+            <a href="Home.aspx" class="header-logo">DailyNeuzz</a>
+        </div>
 
-                    <!-- Navigation Links - Center -->
-                    <div class="hidden md:flex items-center justify-center flex-1 px-8">
-                        <div class="relative w-96">
-                            <asp:TextBox ID="txtSearch" runat="server" 
-                                CssClass="w-full px-4 py-2 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300" 
-                                placeholder="Search articles..." />
-                            <button class="absolute right-3 top-2.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+        <div class="header-center">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search..." />
+                <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <nav class="nav-links">
+                <a href="Home.aspx" class="nav-link">Home</a>
+                <a href="About.aspx" class="nav-link">About</a>
+                <a href="NewsArticles.aspx" class="nav-link">News Articles</a>
+            </nav>
 
-                    <!-- Right Navigation Items -->
-                    <div class="hidden md:flex items-center space-x-8">
-                        <asp:HyperLink runat="server" NavigateUrl="~/Home" 
-                            CssClass="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                            Home
-                        </asp:HyperLink>
-                        <asp:HyperLink runat="server" NavigateUrl="~/About" 
-                            CssClass="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                            About
-                        </asp:HyperLink>
-                        <asp:HyperLink runat="server" NavigateUrl="~/NewsArticles" 
-                            CssClass="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                            News Articles
-                        </asp:HyperLink>
-                        <!-- Profile Image -->
-                        <div class="flex items-center">
-                            <button type="button" class="bg-purple-600 rounded-full h-8 w-8 overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                                <img src="https://via.placeholder.com/32" alt="Profile" class="h-full w-full object-cover" />
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Mobile menu button -->
-                    <div class="flex items-center md:hidden">
-                        <button type="button" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            <% if (Session["UserEmail"] == null) { %>
+                <!-- User is not logged in -->
+                <a href="SignIn.aspx" class="login-btn">Login</a>
+            <% } else { %>
+                <!-- User is logged in -->
+                <div class="profile-dropdown">
+                    <div class="profile-icon">
+                        <asp:Image ID="imgProfile" runat="server" CssClass="profile-image" Visible="false" />
+                        <div id="headerProfilePlaceholder" runat="server" class="profile-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                        </button>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <div class="user-info">
+                            <asp:Literal ID="litUserEmail" runat="server"></asp:Literal>
+                        </div>
+                        <a href="Profile.aspx" class="dropdown-item">Profile</a>
+                        <asp:LinkButton ID="LinkButton1" runat="server" OnClick="Logout_Click" CssClass="dropdown-item">Logout</asp:LinkButton>
                     </div>
                 </div>
-            </div>
-
-            <!-- Mobile menu -->
-            <div class="hidden md:hidden" id="mobileMenu">
-                <div class="px-2 pt-2 pb-3 space-y-1">
-                    <asp:HyperLink runat="server" NavigateUrl="~/Home" 
-                        CssClass="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                        Home
-                    </asp:HyperLink>
-                    <asp:HyperLink runat="server" NavigateUrl="~/About" 
-                        CssClass="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                        About
-                    </asp:HyperLink>
-                    <asp:HyperLink runat="server" NavigateUrl="~/NewsArticles" 
-                        CssClass="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                        News Articles
-                    </asp:HyperLink>
-                </div>
-            </div>
-        </nav>
+            <% } %>
+        </div>
+    </div>
+</header>
 
         <!-- Main Content with proper spacing for fixed navbar -->
         <div class="container mx-auto px-4 pt-24 pb-8">
