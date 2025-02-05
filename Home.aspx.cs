@@ -60,5 +60,6 @@ namespace DailyNeuzz
             Session.Abandon();
             Response.Redirect("~/Home.aspx");
         }
+
     }
 }

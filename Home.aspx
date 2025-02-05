@@ -4,6 +4,7 @@
 <meta name="description" content="Your trusted source for the latest headlines, in-depth analysis, and breaking news every morning.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <html xmlns="http://www.w3.org/1999/xhtml">
+   
 <head runat="server">
     <title>DailyNeuzz</title>
     <link rel="stylesheet" href="Home.css">
@@ -320,7 +321,7 @@
         }
 
         .button-secondary:hover {
-            background-color: #34495e;
+            background-color: #4338ca;
         }
 
         .button-full {
@@ -328,6 +329,27 @@
             text-align: center;
         }
     </style>
+    <script>
+        function searchFunction() {
+            // Get the search input value
+            var input = document.getElementById("searchInput").value.toLowerCase();
+
+            // Get all the post cards
+            var posts = document.querySelectorAll(".post-card");
+
+            // Loop through all posts and hide those that don't match the search query
+            posts.forEach(function (post) {
+                var title = post.querySelector(".post-title").innerText.toLowerCase();
+                var category = post.querySelector(".post-category").innerText.toLowerCase();
+
+                if (title.includes(input) || category.includes(input)) {
+                    post.style.display = "block"; // Show the post
+                } else {
+                    post.style.display = "none"; // Hide the post
+                }
+            });
+        }
+    </script>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -341,14 +363,14 @@
                 </div>
 
                 <div class="header-center">
-                    <div class="search-box">
-                        <input type="text" class="search-input" placeholder="Search..." />
-                        <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
+                        <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search..." onkeyup="searchFunction()" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    </div>
                     </div>
-                </div>
                 
                 <div class="header-right">
                     <nav class="nav-links">

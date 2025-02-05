@@ -61,24 +61,19 @@ namespace DailyNeuzz
                             txtFullName.Text = reader["FullName"].ToString();
                             txtEmail.Text = reader["Email"].ToString();
 
-                            // प्रोफाइल इमेज सेट करें
                             if (reader["ProfileImagePath"] != DBNull.Value)
                             {
                                 string imagePath = reader["ProfileImagePath"].ToString();
                                 imgProfile.ImageUrl = ResolveUrl(imagePath);
                                 imgProfile.Visible = true;
                                 profilePlaceholder.Visible = false;
-
-                                // हेडर इमेज अपडेट करें
-                                //headerProfileImg.ImageUrl = ResolveUrl(imagePath);
-                                //headerProfileImg.Visible = true;
-                                headerProfilePlaceholder.Visible = false;
                             }
                         }
                     }
                 }
             }
         }
+
 
         // पासवर्ड हैशिंग
         private string HashPassword(string password)
@@ -109,7 +104,6 @@ namespace DailyNeuzz
                         cmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim());
                         cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
 
-                        // पासवर्ड अपडेट (ऑप्शनल)
                         if (!string.IsNullOrEmpty(txtPassword.Text))
                         {
                             cmd.Parameters.AddWithValue("@Password", HashPassword(txtPassword.Text));
@@ -134,13 +128,29 @@ namespace DailyNeuzz
                         }
                         catch (Exception ex)
                         {
-                            ShowMessage("Error: " + ex.Message, false);
+                            ShowMessage("Error: " + ex.ToString(), false);
                         }
                     }
                 }
             }
         }
 
+        private bool ValidateProfile()
+        {
+            if (string.IsNullOrEmpty(txtFullName.Text) || string.IsNullOrEmpty(txtEmail.Text))
+            {
+                ShowMessage("Full Name and Email are required.", false);
+                return false;
+            }
+
+            if (!Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                ShowMessage("Invalid email format.", false);
+                return false;
+            }
+
+            return true;
+        }
         // इमेज अपलोड
         protected void btnUpload_Click(object sender, EventArgs e)
         {
@@ -208,22 +218,22 @@ namespace DailyNeuzz
         }
 
         // प्रोफाइल वैलिडेशन
-        private bool ValidateProfile()
-        {
-            if (string.IsNullOrEmpty(txtFullName.Text) || string.IsNullOrEmpty(txtEmail.Text))
-            {
-                ShowMessage("Full Name and Email are required.", false);
-                return false;
-            }
+        //private bool ValidateProfile()
+        //{
+        //    if (string.IsNullOrEmpty(txtFullName.Text) || string.IsNullOrEmpty(txtEmail.Text))
+        //    {
+        //        ShowMessage("Full Name and Email are required.", false);
+        //        return false;
+        //    }
 
-            if (!Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            {
-                ShowMessage("Invalid email format.", false);
-                return false;
-            }
+        //    if (!Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+        //    {
+        //        ShowMessage("Invalid email format.", false);
+        //        return false;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
         // संदेश दिखाएँ
         private void ShowMessage(string message, bool isSuccess)

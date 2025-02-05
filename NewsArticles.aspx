@@ -336,7 +336,7 @@
 }
 
 .read-article:hover {
-    background: #1a202c;
+    background: #4338ca;
 }
 
         /* Footer */
@@ -400,6 +400,68 @@
             }
         }
     </style>
+    <script>
+        function searchFunction() {
+            // Get the search input value and convert to lowercase
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase();
+
+            // Get all article cards
+            const articles = document.querySelectorAll('.article-card');
+
+            // Loop through each article
+            articles.forEach(article => {
+                // Get the article title and category
+                const title = article.querySelector('.article-title').textContent.toLowerCase();
+                const category = article.querySelector('.article-category').textContent.toLowerCase();
+
+                // Check if the search term exists in either title or category
+                if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                    article.style.display = ''; // Show the article
+                } else {
+                    article.style.display = 'none'; // Hide the article
+                }
+            });
+
+            // Show a message if no results found
+            const articlesGrid = document.querySelector('.articles-grid');
+            let noResultsMsg = document.getElementById('noResultsMessage');
+
+            if (Array.from(articles).every(article => article.style.display === 'none')) {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('p');
+                    noResultsMsg.id = 'noResultsMessage';
+                    noResultsMsg.style.textAlign = 'center';
+                    noResultsMsg.style.gridColumn = '1 / -1';
+                    noResultsMsg.style.padding = '2rem';
+                    noResultsMsg.style.color = '#666';
+                    articlesGrid.appendChild(noResultsMsg);
+                }
+                noResultsMsg.textContent = 'No articles found matching your search.';
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        }
+
+        // Add debounce function to improve performance
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Apply debounce to search function
+        window.onload = function () {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', debounce(searchFunction, 300));
+        }
+    </script>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -414,7 +476,7 @@
 
         <div class="header-center">
             <div class="search-box">
-                <input type="text" class="search-input" placeholder="Search..." />
+                <input type="text" id="searchInput" class="search-input" placeholder="Search..." onkeyup="searchFunction()" />
                 <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>

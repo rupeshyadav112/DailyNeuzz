@@ -12,9 +12,16 @@ namespace DailyNeuzz
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (User.Identity.IsAuthenticated)
+            if (IsPostBack) return;
+
+            if (Session["UserID"] != null)
             {
-                Response.Redirect("~/Home.aspx");
+                // User is already logged in, redirect to the return URL if available
+                if (!string.IsNullOrEmpty(Request.QueryString["returnUrl"]))
+                {
+                    string returnUrl = HttpUtility.UrlDecode(Request.QueryString["returnUrl"]);
+                    Response.Redirect(returnUrl);
+                }
             }
         }
 
