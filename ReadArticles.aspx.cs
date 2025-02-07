@@ -4,12 +4,15 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web.Services;
+using Newtonsoft.Json;
+using System.Web;
 
 namespace DailyNeuzz
 {
     public partial class ReadArticles : System.Web.UI.Page
     {
-        string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+        static string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         protected int currentPostId;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -23,19 +26,18 @@ namespace DailyNeuzz
                     LoadRecentArticles();
                 }
 
-                // Check if user is logged in
                 if (Session["UserID"] != null)
                 {
-                    string username = GetUsername(Convert.ToInt32(Session["UserID"]));
-                    ltlCommentUser.Text = username;
-                    btnSubmit.Enabled = true;
+                    litUserEmail.Text = Session["UserEmail"].ToString();
+                    // ProfileImagePath से इमेज URL लें
+                    string profileImagePath = Session["UserProfileImage"]?.ToString();
+                    imgProfile.ImageUrl = ResolveUrl(!string.IsNullOrEmpty(profileImagePath)
+                                                     ? profileImagePath
+                                                     : "image/Avatar.png");
                 }
                 else
                 {
                     ltlCommentUser.Text = "Please sign in to comment";
-                    btnSubmit.Enabled = false;
-                    txtComment.Enabled = false;
-                    txtComment.Text = "Please sign in to leave a comment";
                 }
             }
         }
@@ -53,27 +55,18 @@ namespace DailyNeuzz
             }
         }
 
-        protected void btnAddComment_Click(object sender, EventArgs e)
+        [WebMethod]
+        public static object AddComment(int postId, string commentText)
         {
-            if (Session["UserID"] == null)
-            {
-                Response.Redirect("SignIn.aspx?returnUrl=" + Server.UrlEncode(Request.RawUrl));
-                return;
-            }
+            if (HttpContext.Current.Session["UserID"] == null)
+                return new { success = false, message = "unauthorized" };
 
-            int postId = Convert.ToInt32(Request.QueryString["id"]);
-            int userId = Convert.ToInt32(Session["UserID"]);
-            string commentText = txtComment.Text.Trim();
-
-            if (string.IsNullOrEmpty(commentText))
-            {
-                ScriptManager.RegisterStartupScript(this, GetType(), "alert", "alert('Please enter a comment.');", true);
-                return;
-            }
+            int userId = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"INSERT INTO Comments (PostID, UserID, CommentText, CreatedAt) 
+                               OUTPUT INSERTED.CommentID
                                VALUES (@PostID, @UserID, @CommentText, GETDATE())";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -83,12 +76,218 @@ namespace DailyNeuzz
                     cmd.Parameters.AddWithValue("@CommentText", commentText);
 
                     conn.Open();
-                    cmd.ExecuteNonQuery();
+                    int commentId = (int)cmd.ExecuteScalar();
+
+                    // Get the newly created comment details
+                    query = @"SELECT c.*, u.Username, 
+                             (SELECT COUNT(*) FROM CommentLikes WHERE CommentID = c.CommentID) as LikesCount 
+                             FROM Comments c 
+                             INNER JOIN Users u ON c.UserID = u.UserID 
+                             WHERE c.CommentID = @CommentID";
+
+                    using (SqlCommand getCmd = new SqlCommand(query, conn))
+                    {
+                        getCmd.Parameters.AddWithValue("@CommentID", commentId);
+                        using (SqlDataReader reader = getCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                var comment = new
+                                {
+                                    CommentID = commentId,
+                                    UserID = userId,
+                                    Username = reader["Username"].ToString(),
+                                    CommentText = commentText,
+                                    CreatedAt = DateTime.Now,
+                                    LikesCount = 0,
+                                    IsOwner = true,
+                                    UserAvatar = GetUserAvatar(userId)
+                                };
+
+                                return new { success = true, comment = comment };
+                            }
+                        }
+                    }
                 }
             }
 
-            txtComment.Text = string.Empty;
-            LoadComments(postId);
+            return new { success = false };
+        }
+
+        [WebMethod]
+        public static string UpdateComment(int commentId, string commentText)
+        {
+            try
+            {
+                if (HttpContext.Current.Session["UserID"] == null)
+                    return "unauthorized";
+
+                if (string.IsNullOrWhiteSpace(commentText))
+                    return "error";
+
+                int userId = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    using (SqlTransaction transaction = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            // First verify the comment belongs to the user
+                            string verifyQuery = "SELECT COUNT(1) FROM Comments WHERE CommentID = @CommentID AND UserID = @UserID";
+
+                            using (SqlCommand verifyCmd = new SqlCommand(verifyQuery, conn, transaction))
+                            {
+                                verifyCmd.Parameters.AddWithValue("@CommentID", commentId);
+                                verifyCmd.Parameters.AddWithValue("@UserID", userId);
+
+                                int count = (int)verifyCmd.ExecuteScalar();
+
+                                if (count == 0)
+                                {
+                                    transaction.Rollback();
+                                    return "unauthorized";
+                                }
+
+                                // If verified, proceed with update
+                                string updateQuery = @"UPDATE Comments 
+                                                    SET CommentText = @CommentText, 
+                                                        ModifiedAt = GETDATE() 
+                                                    WHERE CommentID = @CommentID 
+                                                    AND UserID = @UserID";
+
+                                using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn, transaction))
+                                {
+                                    updateCmd.Parameters.AddWithValue("@CommentID", commentId);
+                                    updateCmd.Parameters.AddWithValue("@CommentText", commentText);
+                                    updateCmd.Parameters.AddWithValue("@UserID", userId);
+
+                                    int result = updateCmd.ExecuteNonQuery();
+                                    if (result > 0)
+                                    {
+                                        transaction.Commit();
+                                        return "success";
+                                    }
+                                    else
+                                    {
+                                        transaction.Rollback();
+                                        return "error";
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                return "error";
+            }
+        }
+
+        [WebMethod]
+        public static string DeleteComment(int commentId)
+        {
+            if (HttpContext.Current.Session["UserID"] == null)
+                return "unauthorized";
+
+            int userId = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // First delete any likes associated with the comment
+                        string deleteLikesQuery = "DELETE FROM CommentLikes WHERE CommentID = @CommentID";
+                        using (SqlCommand cmd = new SqlCommand(deleteLikesQuery, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@CommentID", commentId);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Then delete the comment
+                        string deleteCommentQuery = "DELETE FROM Comments WHERE CommentID = @CommentID AND UserID = @UserID";
+                        using (SqlCommand cmd = new SqlCommand(deleteCommentQuery, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@CommentID", commentId);
+                            cmd.Parameters.AddWithValue("@UserID", userId);
+
+                            int result = cmd.ExecuteNonQuery();
+                            if (result > 0)
+                            {
+                                transaction.Commit();
+                                return "success";
+                            }
+                            else
+                            {
+                                transaction.Rollback();
+                                return "error";
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        return "error";
+                    }
+                }
+            }
+        }
+
+        [WebMethod]
+        public static string ToggleLike(int commentId)
+        {
+            if (HttpContext.Current.Session["UserID"] == null)
+                return "unauthorized";
+
+            int userId = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        string toggleQuery = @"
+                            IF EXISTS (SELECT 1 FROM CommentLikes WHERE CommentID = @CommentID AND UserID = @UserID)
+                                DELETE FROM CommentLikes WHERE CommentID = @CommentID AND UserID = @UserID
+                            ELSE
+                                INSERT INTO CommentLikes (CommentID, UserID) VALUES (@CommentID, @UserID)";
+
+                        using (SqlCommand cmd = new SqlCommand(toggleQuery, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@CommentID", commentId);
+                            cmd.Parameters.AddWithValue("@UserID", userId);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        string getLikesQuery = "SELECT COUNT(*) FROM CommentLikes WHERE CommentID = @CommentID";
+                        using (SqlCommand cmd = new SqlCommand(getLikesQuery, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@CommentID", commentId);
+                            int likesCount = (int)cmd.ExecuteScalar();
+                            transaction.Commit();
+                            return JsonConvert.SerializeObject(new { success = true, likesCount = likesCount });
+                        }
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        return "error";
+                    }
+                }
+            }
         }
 
         private void LoadComments(int postId)
@@ -133,7 +332,7 @@ namespace DailyNeuzz
             return postTime.ToString("MMM dd, yyyy");
         }
 
-        protected string GetUserAvatar(object userId)
+        protected static string GetUserAvatar(object userId)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -144,68 +343,6 @@ namespace DailyNeuzz
                     conn.Open();
                     string imagePath = cmd.ExecuteScalar()?.ToString();
                     return !string.IsNullOrEmpty(imagePath) ? imagePath : "~/images/default-avatar.png";
-                }
-            }
-        }
-
-        protected void LikeComment(object sender, CommandEventArgs e)
-        {
-            if (Session["UserID"] == null)
-            {
-                Response.Redirect("SignIn.aspx?returnUrl=" + Server.UrlEncode(Request.RawUrl));
-                return;
-            }
-
-            int commentId = Convert.ToInt32(e.CommandArgument);
-            int userId = Convert.ToInt32(Session["UserID"]);
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = @"IF NOT EXISTS (SELECT 1 FROM CommentLikes WHERE CommentID = @CommentID AND UserID = @UserID)
-                               BEGIN
-                                   INSERT INTO CommentLikes (CommentID, UserID) VALUES (@CommentID, @UserID)
-                               END
-                               ELSE
-                               BEGIN
-                                   DELETE FROM CommentLikes WHERE CommentID = @CommentID AND UserID = @UserID
-                               END";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@CommentID", commentId);
-                    cmd.Parameters.AddWithValue("@UserID", userId);
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
-
-            LoadComments(currentPostId);
-        }
-
-        protected string FormatDate(object date)
-        {
-            return Convert.ToDateTime(date).ToString("MMM dd, yyyy");
-        }
-
-        protected DataTable GetCommentReplies(object commentId)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = @"SELECT r.*, u.Username 
-                                FROM CommentReplies r 
-                                INNER JOIN Users u ON r.UserID = u.UserID 
-                                WHERE r.CommentID = @CommentID 
-                                ORDER BY r.CreatedAt ASC";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@CommentID", commentId);
-                    using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
-                    {
-                        DataTable dt = new DataTable();
-                        sda.Fill(dt);
-                        return dt;
-                    }
                 }
             }
         }
@@ -226,7 +363,14 @@ namespace DailyNeuzz
                 }
             }
         }
-         protected void Logout_Click(object sender, EventArgs e)
+
+        protected bool IsCommentOwner(object userId)
+        {
+            if (Session["UserID"] == null) return false;
+            return Convert.ToInt32(userId) == Convert.ToInt32(Session["UserID"]);
+        }
+
+        protected void Logout_Click(object sender, EventArgs e)
         {
             Session.Clear();
             Session.Abandon();
@@ -284,86 +428,9 @@ namespace DailyNeuzz
             }
         }
 
-        // Add this method to handle the Repeater's ItemCommand event
-        protected void rptComments_ItemCommand(object source, RepeaterCommandEventArgs e)
+        protected string FormatDate(object date)
         {
-            if (e.CommandName == "LikeComment")
-            {
-                if (Session["UserID"] == null)
-                {
-                    Response.Redirect("SignIn.aspx?returnUrl=" + Server.UrlEncode(Request.RawUrl));
-                    return;
-                }
-
-                int commentId = Convert.ToInt32(e.CommandArgument);
-                int userId = Convert.ToInt32(Session["UserID"]);
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"IF NOT EXISTS (SELECT 1 FROM CommentLikes 
-                                    WHERE CommentID = @CommentID AND UserID = @UserID)
-                                   BEGIN
-                                       INSERT INTO CommentLikes (CommentID, UserID) 
-                                       VALUES (@CommentID, @UserID)
-                                   END
-                                   ELSE
-                                   BEGIN
-                                       DELETE FROM CommentLikes 
-                                       WHERE CommentID = @CommentID AND UserID = @UserID
-                                   END";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@CommentID", commentId);
-                        cmd.Parameters.AddWithValue("@UserID", userId);
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                // Reload comments to reflect the changes
-                LoadComments(currentPostId);
-            }
-            else if (e.CommandName == "AddReply")
-            {
-                if (Session["UserID"] == null)
-                {
-                    Response.Redirect("SignIn.aspx?returnUrl=" + Server.UrlEncode(Request.RawUrl));
-                    return;
-                }
-
-                int commentId = Convert.ToInt32(e.CommandArgument);
-                RepeaterItem item = (RepeaterItem)e.Item;
-                TextBox replyTextBox = (TextBox)item.FindControl("txtReply");
-                string replyText = replyTextBox.Text.Trim();
-
-                if (string.IsNullOrEmpty(replyText))
-                {
-                    ScriptManager.RegisterStartupScript(this, GetType(), "alert",
-                        "alert('Please enter a reply.');", true);
-                    return;
-                }
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"INSERT INTO CommentReplies (CommentID, UserID, ReplyText, CreatedAt) 
-                                   VALUES (@CommentID, @UserID, @ReplyText, GETDATE())";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@CommentID", commentId);
-                        cmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-                        cmd.Parameters.AddWithValue("@ReplyText", replyText);
-
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                // Clear the reply textbox and reload comments
-                replyTextBox.Text = string.Empty;
-                LoadComments(currentPostId);
-            }
+            return Convert.ToDateTime(date).ToString("MMM dd, yyyy");
         }
     }
 }

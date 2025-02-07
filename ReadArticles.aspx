@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
     <style>
-/* Base styles */
+        /* Base styles */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: #f9fafb;
@@ -554,71 +554,195 @@ body {
 }
 
 /* Responsive styles */
-@media (max-width: 768px) {
-    .header-content {
-        grid-template-columns: auto 1fr;
-    }
-    
-    .header-center {
-        display: none;
-    }
-    
-    .nav-links {
-        display: none;
-    }
-    
-    .article-hero {
-        height: 16rem;
-    }
-    
-    .article-title {
-        font-size: 1.875rem;
-    }
-    
-    .cta-content {
-        flex-direction: column;
-        padding: 2rem;
-    }
-    
-    .cta-form {
-        flex-direction: column;
-    }
-    
-    .articles-grid {
-        grid-template-columns: 1fr;
-    }
-}
+        @media (max-width: 768px) {
+            .header-content {
+                grid-template-columns: auto 1fr;
+            }
+
+            .header-center {
+                display: none;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .article-hero {
+                height: 16rem;
+            }
+
+            .article-title {
+                font-size: 1.875rem;
+            }
+
+            .cta-content {
+                flex-direction: column;
+                padding: 2rem;
+            }
+
+            .cta-form {
+                flex-direction: column;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+            /* Your existing styles remain unchanged */
+            /* Add these new styles for comments */
+            .comment-actions {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-top: 0.5rem;
+            }
+
+            .action-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.375rem;
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.375rem;
+                font-size: 0.875rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                border: 1px solid transparent;
+                cursor: pointer;
+                background: transparent;
+            }
+
+            .edit-btn {
+                color: #047857;
+            }
+
+                .edit-btn:hover {
+                    background-color: #ecfdf5;
+                    border-color: #059669;
+                }
+
+            .delete-btn {
+                color: #dc2626;
+            }
+
+                .delete-btn:hover {
+                    background-color: #fef2f2;
+                    border-color: #ef4444;
+                }
+
+            .action-btn i {
+                font-size: 1rem;
+            }
+
+            /* Edit form styles */
+            .edit-form {
+                margin: 1rem 0;
+                padding: 1rem;
+                background-color: #f8fafc;
+                border-radius: 0.5rem;
+                border: 1px solid #e2e8f0;
+            }
+
+                .edit-form textarea {
+                    width: 100%;
+                    min-height: 6rem;
+                    padding: 0.75rem;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 0.375rem;
+                    margin-bottom: 1rem;
+                    font-size: 0.875rem;
+                    transition: border-color 0.2s ease;
+                }
+
+                    .edit-form textarea:focus {
+                        outline: none;
+                        border-color: #3b82f6;
+                        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+                    }
+
+            .edit-actions {
+                display: flex;
+                gap: 0.75rem;
+                justify-content: flex-end;
+            }
+
+                .edit-actions button {
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.375rem;
+                    font-weight: 500;
+                    font-size: 0.875rem;
+                    transition: all 0.2s ease;
+                    cursor: pointer;
+                }
+
+            .submit-button {
+                background-color: #3b82f6;
+                color: white;
+                border: none;
+            }
+
+                .submit-button:hover {
+                    background-color: #2563eb;
+                }
+
+                .submit-button:disabled {
+                    background-color: #93c5fd;
+                    cursor: not-allowed;
+                }
+
+            .cancel-button {
+                background-color: #f1f5f9;
+                color: #475569;
+                border: 1px solid #e2e8f0;
+            }
+
+                .cancel-button:hover {
+                    background-color: #e2e8f0;
+                    color: #1e293b;
+                }
+
+            /* Animation for buttons */
+            .action-btn {
+                position: relative;
+                overflow: hidden;
+            }
+
+                .action-btn::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 5px;
+                    height: 5px;
+                    background: rgba(255, 255, 255, 0.5);
+                    opacity: 0;
+                    border-radius: 100%;
+                    transform: scale(1, 1) translate(-50%);
+                    transform-origin: 50% 50%;
+                }
+
+                .action-btn:focus:not(:active)::after {
+                    animation: ripple 1s ease-out;
+                }
+
+            @keyframes ripple {
+                0% {
+                    transform: scale(0, 0);
+                    opacity: 0.5;
+                }
+
+                100% {
+                    transform: scale(100, 100);
+                    opacity: 0;
+                }
+            }
+        }
     </style>
-   <script>
-       function searchArticles() {
-           // Get the search input value
-           const searchQuery = document.getElementById("searchInput").value.toLowerCase();
-
-           // Get all article cards
-           const articlesGrid = document.getElementById("articlesGrid");
-           const articles = articlesGrid.getElementsByClassName("article-card");
-
-           // Loop through all articles and hide those that don't match the search query
-           for (let i = 0; i < articles.length; i++) {
-               const article = articles[i];
-               const title = article.querySelector(".card-title").innerText.toLowerCase();
-               const category = article.querySelector(".card-category").innerText.toLowerCase();
-
-               // Check if the title or category contains the search query
-               if (title.includes(searchQuery) || category.includes(searchQuery)) {
-                   article.style.display = "block"; // Show the article
-               } else {
-                   article.style.display = "none"; // Hide the article
-               }
-           }
-       }
-   </script>
 </head>
 <body>
     <form id="form1" runat="server">
-        <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+        <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true"></asp:ScriptManager>
         
-        <!-- Header -->
+        <!-- Your existing header and content sections remain unchanged -->
+          <!-- Header -->
         <header>
             <div class="header-content">
                 <div class="header-left">
@@ -666,7 +790,6 @@ body {
                 </div>
             </div>
         </header>
-
         <!-- Main Content -->
         <main class="main-content">
             <article class="article-container">
@@ -697,65 +820,68 @@ body {
                         <asp:Literal ID="ltlContent" runat="server"></asp:Literal>
                     </div>
 
-                    <!-- Comments Section -->
-                    <div class="comments-section">
-                        <h2 class="comments-title">Comments</h2>
-                        
-                        <div class="comment-form">
-                            <div class="user-info">
-                                <i class="fas fa-user"></i>
-                                <span>Commenting as <asp:Literal ID="ltlCommentUser" runat="server"></asp:Literal></span>
-                            </div>
-                            
-                            <asp:TextBox ID="txtComment" runat="server" 
-                                TextMode="MultiLine" 
-                                CssClass="comment-input" 
-                                placeholder="Write your comment..."
-                                onkeyup="updateCharCount(this)">
-                            </asp:TextBox>
-                            
-                            <div class="comment-form-footer">
-                                <span class="char-counter">
-                                    <span id="charCount">200</span> characters remaining
-                                </span>
-                                <asp:Button ID="btnSubmit" runat="server" 
-                                    Text="Post Comment" 
-                                    CssClass="submit-button"
-                                    OnClick="btnAddComment_Click" />
-                            </div>
-                        </div>
-
-                        <div class="comments-list">
-                            <asp:Repeater ID="rptComments" runat="server" OnItemCommand="rptComments_ItemCommand">
-                                <ItemTemplate>
-                                    <div class="comment-item">
-                                        <div class="comment-avatar">
-                                            <img src='<%# GetUserAvatar(Eval("UserID")) %>' alt="User avatar" />
-                                        </div>
-                                        <div class="comment-content">
-                                            <div class="comment-header">
-                                                <span class="comment-author"><%# Eval("UserName") %></span>
-                                                <span class="comment-time"><%# GetTimeAgo(Eval("CreatedAt")) %></span>
-                                            </div>
-                                            <p class="comment-text"><%# Eval("CommentText") %></p>
-                                            <div class="comment-actions">
-                                                <button type="button" class="like-button">
-                                                    <i class="far fa-thumbs-up"></i>
-                                                    <span>Like</span>
-                                                </button>
-                                                <span class="likes-count"><%# Eval("LikesCount") %></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </div>
-                    </div>
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <h2 class="comments-title">Comments</h2>
+            
+            <div class="comment-form">
+                <div class="user-info">
+                    <i class="fas fa-user"></i>
+                    <span>Commenting as <asp:Literal ID="ltlCommentUser" runat="server"></asp:Literal></span>
                 </div>
-            </article>
+                
+                <textarea id="txtComment" class="comment-input" 
+                    placeholder="Write your comment..." 
+                    onkeyup="updateCharCount(this)"></textarea>
+                
+                <div class="comment-form-footer">
+                    <span class="char-counter">
+                        <span id="charCount">200</span> characters remaining
+                    </span>
+                    <button type="button" id="btnSubmit" class="submit-button">Post Comment</button>
+                </div>
+            </div>
 
-            <!-- Recent Articles -->
-            <!-- Recent Articles Section -->
+            <div class="comments-list">
+    <asp:Repeater ID="rptComments" runat="server">
+        <ItemTemplate>
+            <div class="comment-item" data-comment-id='<%# Eval("CommentID") %>'>
+                <div class="comment-avatar">
+                    <img src='<%# GetUserAvatar(Eval("UserID")) %>' alt="User avatar" />
+                </div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <span class="comment-author"><%# Eval("Username") %></span>
+                        <span class="comment-time"><%# GetTimeAgo(Eval("CreatedAt")) %></span>
+                    </div>
+                    <p class="comment-text"><%# Eval("CommentText") %></p>
+                    <div class="comment-actions">
+    <asp:PlaceHolder runat="server" Visible='<%# IsCommentOwner(Eval("UserID")) %>'>
+        <button type="button" class="action-btn edit-btn" onclick="editComment(<%# Eval("CommentID") %>)">
+            <i class="fas fa-edit"></i>
+            <span>Edit</span>
+        </button>
+        <button type="button" class="action-btn delete-btn" onclick="deleteComment(<%# Eval("CommentID") %>)">
+            <i class="fas fa-trash-alt"></i>
+            <span>Delete</span>
+        </button>
+    </asp:PlaceHolder>
+    <button type="button" 
+            class="like-button <%# IsCommentLikedByUser(Eval("CommentID")) ? "liked" : "" %>" 
+            onclick="likeComment(<%# Eval("CommentID") %>)" 
+            data-comment-id="<%# Eval("CommentID") %>">
+        <i class="<%# IsCommentLikedByUser(Eval("CommentID")) ? "fas" : "far" %> fa-thumbs-up"></i>
+        <span class="likes-count"><%# Eval("LikesCount") %></span>
+    </button>
+</div>
+                </div>
+            </div>
+        </ItemTemplate>
+    </asp:Repeater>
+</div>
+        </div>
+
+          <!-- Recent Articles Section -->
 <section class="recent-articles">
     <h2 class="section-title">Recent Articles</h2>
     <div class="articles-grid" id="articlesGrid">
@@ -804,68 +930,201 @@ body {
     </form>
 
     <script>
+        function searchArticles() {
+            // Get the search input value
+            const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+
+            // Get all article cards
+            const articlesGrid = document.getElementById("articlesGrid");
+            const articles = articlesGrid.getElementsByClassName("article-card");
+
+            // Loop through all articles and hide those that don't match the search query
+            for (let i = 0; i < articles.length; i++) {
+                const article = articles[i];
+                const title = article.querySelector(".card-title").innerText.toLowerCase();
+                const category = article.querySelector(".card-category").innerText.toLowerCase();
+
+                // Check if the title or category contains the search query
+                if (title.includes(searchQuery) || category.includes(searchQuery)) {
+                    article.style.display = "block"; // Show the article
+                } else {
+                    article.style.display = "none"; // Hide the article
+                }
+            }
+        }
         function updateCharCount(textarea) {
             const maxLength = 200;
             const currentLength = textarea.value.length;
             const remaining = maxLength - currentLength;
-
+            
+            document.getElementById('charCount').textContent = remaining;
+            
             if (currentLength > maxLength) {
                 textarea.value = textarea.value.substring(0, maxLength);
-                remaining = 0;
-            }
-
-            document.getElementById('charCount').textContent = remaining;
-        }
-        function toggleReplyForm(commentId) {
-            const replyForm = document.getElementById('reply-form-' + commentId);
-            if (replyForm) {
-                replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
             }
         }
 
         function editComment(commentId) {
-            // Get the comment text element
-            const commentText = document.querySelector(`#comment-${commentId} .comment-text`);
-            const originalText = commentText.textContent;
+            const commentDiv = document.querySelector(`[data-comment-id="${commentId}"]`);
+            const commentText = commentDiv.querySelector('.comment-text');
+            const originalText = commentText.textContent.trim();
 
-            // Create edit form
+            // Create edit form with escaped text content
             const editForm = document.createElement('div');
+            editForm.className = 'edit-form';
             editForm.innerHTML = `
-                <textarea class="edit-input">${originalText}</textarea>
-                <div class="edit-actions">
-                    <button type="button" onclick="saveComment(${commentId})">Save</button>
-                    <button type="button" onclick="cancelEdit(${commentId}, '${originalText}')">Cancel</button>
-                </div>
-            `;
+        <textarea class="comment-input">${originalText}</textarea>
+        <div class="edit-actions">
+            <button type="button" class="submit-button" onclick="saveComment(${commentId})">Save</button>
+            <button type="button" class="cancel-button" onclick="cancelEdit(${commentId}, '${originalText.replace(/'/g, "\\'")}')">Cancel</button>
+        </div>
+    `;
 
-            // Replace comment text with edit form
-            commentText.replaceWith(editForm);
+            commentText.style.display = 'none';
+            commentText.insertAdjacentElement('afterend', editForm);
+        }
+
+        function saveComment(commentId) {
+            const commentDiv = document.querySelector(`[data-comment-id="${commentId}"]`);
+            const editForm = commentDiv.querySelector('.edit-form');
+            const commentText = commentDiv.querySelector('.comment-text');
+            const newText = editForm.querySelector('textarea').value.trim();
+
+            if (!newText) {
+                alert('Comment cannot be empty');
+                return;
+            }
+
+            // Show loading state
+            const submitButton = editForm.querySelector('.submit-button');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Saving...';
+
+            PageMethods.UpdateComment(commentId, newText, function (response) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Save';
+
+                if (response === 'success') {
+                    commentText.textContent = newText;
+                    commentText.style.display = 'block';
+                    editForm.remove();
+                } else if (response === 'unauthorized') {
+                    window.location.href = 'SignIn.aspx?returnUrl=' + encodeURIComponent(window.location.href);
+                } else {
+                    alert('Failed to update comment. Please try again.');
+                }
+            }, function (error) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Save';
+                alert('An error occurred while updating the comment. Please try again.');
+                console.error('Error:', error);
+            });
+        }
+
+        function cancelEdit(commentId, originalText) {
+            const commentDiv = document.querySelector(`[data-comment-id="${commentId}"]`);
+            const editForm = commentDiv.querySelector('.edit-form');
+            const commentText = commentDiv.querySelector('.comment-text');
+
+            commentText.textContent = originalText;
+            commentText.style.display = 'block';
+            editForm.remove();
         }
 
         function deleteComment(commentId) {
-            if (confirm('Are you sure you want to delete this comment?')) {
-                // Make an AJAX call to delete the comment
-                // You'll need to implement the server-side handler
-                fetch(`DeleteComment.aspx?commentId=${commentId}`, {
-                    method: 'POST',
-                    credentials: 'include'
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Remove the comment from the DOM
-                            const commentElement = document.querySelector(`#comment-${commentId}`);
-                            commentElement.remove();
-                        } else {
-                            alert('Failed to delete comment');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while deleting the comment');
-                    });
+            if (!confirm('Are you sure you want to delete this comment?')) return;
+
+            PageMethods.DeleteComment(commentId, function (response) {
+                if (response === 'success') {
+                    const commentDiv = document.querySelector(`[data-comment-id="${commentId}"]`);
+                    commentDiv.remove();
+                } else if (response === 'unauthorized') {
+                    window.location.href = 'SignIn.aspx?returnUrl=' + encodeURIComponent(window.location.href);
+                } else {
+                    alert('Failed to delete comment');
+                }
+            });
+        } 
+
+        function likeComment(commentId) {
+            PageMethods.ToggleLike(commentId, function(result) {
+                if (result === 'unauthorized') {
+                    window.location.href = 'SignIn.aspx?returnUrl=' + encodeURIComponent(window.location.href);
+                    return;
+                }
+                
+                const data = JSON.parse(result);
+                if (data.success) {
+                    const likeButton = document.querySelector(`[data-comment-id="${commentId}"]`);
+                    const likesCount = likeButton.querySelector('.likes-count');
+                    const icon = likeButton.querySelector('i');
+                    
+                    likesCount.textContent = data.likesCount;
+                    likeButton.classList.toggle('liked');
+                    icon.classList.toggle('far');
+                    icon.classList.toggle('fas');
+                }
+            });
+        }
+
+        document.getElementById('btnSubmit').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const commentText = document.getElementById('txtComment').value;
+            if (!commentText.trim()) {
+                alert('Please enter a comment');
+                return;
             }
+
+            PageMethods.AddComment(<%= currentPostId %>, commentText, function (result) {
+                if (result.success) {
+                    // Clear the comment input
+                    document.getElementById('txtComment').value = '';
+
+                    // Add the new comment to the list without refreshing
+                    const commentsList = document.querySelector('.comments-list');
+                    const newComment = createCommentElement(result.comment);
+                    commentsList.insertBefore(newComment, commentsList.firstChild);
+                } else {
+                    alert('Failed to add comment');
+                }
+            });
+        });
+
+        function createCommentElement(comment) {
+            const div = document.createElement('div');
+            div.className = 'comment-item';
+            div.setAttribute('data-comment-id', comment.CommentID);
+
+            div.innerHTML = `
+                <div class="comment-avatar">
+                    <img src="${comment.UserAvatar}" alt="User avatar" />
+                </div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <span class="comment-author">${comment.Username}</span>
+                        <span class="comment-time">Just now</span>
+                    </div>
+                    <p class="comment-text">${comment.CommentText}</p>
+                    <div class="comment-actions">
+                        ${comment.IsOwner ? `
+                            <button type="button" class="action-btn edit-btn" onclick="editComment(${comment.CommentID})">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button type="button" class="action-btn delete-btn" onclick="deleteComment(${comment.CommentID})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        ` : ''}
+                        <button type="button" class="like-button" onclick="likeComment(${comment.CommentID})" data-comment-id="${comment.CommentID}">
+                            <i class="far fa-thumbs-up"></i>
+                            <span class="likes-count">0</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            return div;
         }
     </script>
 </body>
-</html> 
+</html>
