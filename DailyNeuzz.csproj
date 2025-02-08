@@ -142,6 +142,7 @@
     <Content Include="SignIn.aspx" />
     <Content Include="SignUp.aspx" />
     <Content Include="Web.config" />
+    <Content Include="YourArticles.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="About.aspx.cs">
@@ -228,6 +229,13 @@
     </Compile>
     <Compile Include="SignUp.aspx.designer.cs">
       <DependentUpon>SignUp.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="YourArticles.aspx.cs">
+      <DependentUpon>YourArticles.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="YourArticles.aspx.designer.cs">
+      <DependentUpon>YourArticles.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
